@@ -1,0 +1,17 @@
+streamlit>=1.28.0
+streamlit-chat>=0.1.0
+openai>=1.6.0
+httpx>=0.25.0
+requests>=2.31.0
+chromadb>=0.4.22
+pdfplumber>=0.10.0
+pymupdf>=1.23.0
+jieba>=0.42.1
+zhconv>=1.4.3
+numpy>=1.24.0
+pandas>=2.0.0
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.0.0
+loguru>=0.7.0
+tqdm>=4.66.0
