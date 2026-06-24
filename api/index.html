@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>胡希恕经方辨证系统</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+    min-height: 100vh; padding: 20px; color: #2c3e50;
+}
+.container { max-width: 900px; margin: 0 auto; }
+.header { text-align: center; padding: 30px 20px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+.header h1 { color: #2c5e3f; font-size: 2em; margin-bottom: 10px; }
+.header p { color: #666; }
+.card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+textarea { width: 100%; min-height: 120px; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; }
+textarea:focus { outline: none; border-color: #2c5e3f; }
+button { background: #2c5e3f; color: white; border: none; padding: 12px 30px; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+button:hover { background: #1e4628; }
+button:disabled { background: #ccc; cursor: not-allowed; }
+.badge { display: inline-block; background: #2c5e3f; color: white; padding: 4px 12px; border-radius: 6px; font-size: 14px; margin-right: 8px; margin-bottom: 8px; }
+.formula-card { background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%); padding: 20px; border-radius: 10px; border-left: 4px solid #2c5e3f; margin: 15px 0; }
+.formula-card h3 { color: #2c5e3f; margin-bottom: 10px; }
+.formula-item { margin: 4px 0; }
+.reasoning { background: #f9f9f9; padding: 15px; border-radius: 8px; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
+.examples { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.example-chip { background: #f0f4f0; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer; border: 1px solid #d0d8d0; }
+.example-chip:hover { background: #e0e8e0; }
+.footer { text-align: center; color: #888; font-size: 12px; margin-top: 30px; }
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; }
+.tab { padding: 10px 20px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+.tab.active { color: #2c5e3f; border-bottom-color: #2c5e3f; font-weight: bold; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🌿 胡希恕经方辨证系统</h1>
+        <p>六经辨证 · 方证对应 · 模拟胡希恕先生辨证思路</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-tab="consult">🩺 辨证问诊</div>
+        <div class="tab" data-tab="formulas">📚 方剂库</div>
+        <div class="tab" data-tab="about">ℹ️ 关于</div>
+    </div>
+
+    <div id="consult" class="tab-content active">
+        <div class="card">
+            <h2>🩺 模拟胡希恕先生辨证</h2>
+            <p style="color: #666; margin: 10px 0;">请详细描述您的主要不适症状</p>
+
+            <div class="examples">
+                <strong style="margin-right: 10px;">快速测试：</strong>
+                <span class="example-chip" onclick="useExample('发热恶寒，无汗，头痛，身痛，脉浮紧')">风寒感冒</span>
+                <span class="example-chip" onclick="useExample('寒热往来，口苦咽干，胸胁苦满，默默不欲饮食')">少阳证</span>
+                <span class="example-chip" onclick="useExample('心下痞硬，便秘，腹满痛，潮热')">阳明腑实</span>
+                <span class="example-chip" onclick="useExample('心下悸，气从少腹上冲心，胸闷')">奔豚</span>
+                <span class="example-chip" onclick="useExample('腹满，吐利，不欲食，手足不温')">太阴虚寒</span>
+            </div>
+
+            <textarea id="symptoms" placeholder="例如：发热3天，体温38.5度，怕冷，无汗，头痛，全身酸痛..."></textarea>
+            <button id="btn" onclick="diagnose()">🎯 开始辨证</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <div id="formulas" class="tab-content">
+        <div class="card">
+            <h2>📚 胡希恕常用方剂库</h2>
+            <div id="formula-list">加载中...</div>
+        </div>
+    </div>
+
+    <div id="about" class="tab-content">
+        <div class="card">
+            <h2>ℹ️ 关于本系统</h2>
+            <p><strong>目标：</strong>百分百模拟胡希恕先生（1898-1984）的辨证施治过程</p>
+            <p style="margin-top: 10px;"><strong>核心理念：</strong>方证对应，六经辨证</p>
+            <p style="margin-top: 10px;"><strong>免责声明：</strong>本系统仅供学习研究参考，不构成医疗建议。实际诊疗请咨询执业医师。</p>
+            <p style="margin-top: 10px;"><strong>资料来源：</strong>胡希恕先生著作及弟子整理资料</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>胡希恕经方辨证系统 v1.0.0 | 基于胡希恕先生学术思想</p>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
+        if (tab.dataset.tab === "formulas") loadFormulas();
+    });
+});
+
+function useExample(text) { document.getElementById("symptoms").value = text; }
+
+async function diagnose() {
+    const text = document.getElementById("symptoms").value.trim();
+    if (!text) { alert("请先描述症状"); return; }
+    const btn = document.getElementById("btn");
+    btn.disabled = true; btn.textContent = "辨证中...";
+    try {
+        const response = await fetch("/api/diagnose", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ symptoms: text })
+        });
+        const data = await response.json();
+        renderResult(data);
+    } catch (e) {
+        document.getElementById("result").innerHTML = "<div class=card><p style=color:red;>辨证失败：" + e.message + "</p></div>";
+    } finally {
+        btn.disabled = false; btn.textContent = "🎯 开始辨证";
+    }
+}
+
+function renderResult(data) {
+    if (data.error) {
+        document.getElementById("result").innerHTML = "<div class=card><p style=color:red;>" + data.error + "</p></div>";
+        return;
+    }
+    let html = "<div class=card><h2>🎯 辨证结果</h2>";
+    if (data.confidence) {
+        const pct = Math.round(data.confidence * 100);
+        html += "<div style=margin:10px_0;><strong>置信度：</strong>" + pct + "%</div>";
+    }
+    html += "<div style=margin:15px_0;><span class=badge>六经：" + (data.meridian || "未明") + "</span>";
+    if (data.primary_formula) {
+        html += "<span class=badge>方证：" + data.primary_formula.name + "</span></div>";
+        const f = data.primary_formula;
+        html += "<div class=formula-card><h3>📋 处方：" + f.name + "</h3><div style=margin:10px_0;>";
+        for (const [k, v] of Object.entries(f.composition || {})) {
+            html += "<div class=formula-item>• <strong>" + k + "</strong>: " + v + "</div>";
+        }
+        html += "</div>";
+        if (f.disease_mechanism) html += "<p style=margin-top:10px;><strong>病机：</strong>" + f.disease_mechanism + "</p>";
+        if (f.formula_meaning) html += "<p style=margin-top:5px;><strong>方义：</strong>" + f.formula_meaning + "</p>";
+        if (f.constitution) html += "<p style=margin-top:5px;><strong>适用体质：</strong>" + f.constitution + "</p>";
+        html += "</div>";
+    } else { html += "</div>"; }
+    if (data.meridian_reasoning) {
+        html += "<h3>🔍 辨证思路</h3><div class=reasoning>" + data.meridian_reasoning + "</div>";
+    }
+    if (data.secondary_formulas && data.secondary_formulas.length > 0) {
+        html += "<h3 style=margin-top:20px;>🔄 备选方剂</h3>";
+        for (const s of data.secondary_formulas) {
+            html += "<div style=margin:5px_0;>• <strong>" + s.name + "</strong>（" + s.meridian + "）— " + (s.indications || []).join("、") + "</div>";
+        }
+    }
+    if (data.treatment_advice) {
+        html += "<h3 style=margin-top:20px;>📋 医嘱</h3><div class=reasoning>" + data.treatment_advice + "</div>";
+    }
+    html += "</div>";
+    document.getElementById("result").innerHTML = html;
+}
+
+async function loadFormulas() {
+    try {
+        const response = await fetch("/api/formulas");
+        const data = await response.json();
+        let html = "<p>共 " + data.count + " 首方剂</p>";
+        html += "<div style=display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;>";
+        for (const f of data.formulas) {
+            html += "<div style=border:1px_solid_#e0e0e0;padding:12px;border-radius:8px;>";
+            html += "<strong>" + f.name + "</strong>";
+            html += "<div style=font-size:13px;color:#666;margin-top:4px;>六经：" + f.meridian + "</div>";
+            html += "<div style=font-size:13px;margin-top:4px;>" + (f.indications || []).join("、") + "</div>";
+            html += "</div>";
+        }
+        html += "</div>";
+        document.getElementById("formula-list").innerHTML = html;
+    } catch (e) {
+        document.getElementById("formula-list").innerHTML = "加载失败：" + e.message;
+    }
+}
+</script>
+</body>
+</html>
