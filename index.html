@@ -130,6 +130,14 @@ button.secondary {
   font-family: inherit;
 }
 .symptom-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.sub-label {
+  font-size: 13px;
+  color: var(--primary);
+  font-weight: 500;
+  margin: 8px 0 0;
+  padding-left: 4px;
+  border-left: 2px solid var(--gold);
+}
 .chip {
   padding: 6px 12px;
   background: #fff;
@@ -255,9 +263,33 @@ button.secondary {
     </div>
 
     <div class="card">
-      <h3>二、四诊信息（选填）</h3>
-      <input type="text" id="tongue" placeholder="舌象：例 舌淡苔白 / 舌红苔黄腻">
-      <input type="text" id="pulse" placeholder="脉象：例 浮紧 / 沉细" style="margin-top:6px">
+      <h3>二、四诊信息（点选 + 文本补充）</h3>
+
+      <div class="sub-label">舌象</div>
+      <div class="symptom-chips" id="chip-tongue"></div>
+      <input type="text" id="tongue" placeholder="补充：例 边有齿痕 / 苔水滑">
+
+      <div class="sub-label">脉象</div>
+      <div class="symptom-chips" id="chip-pulse"></div>
+      <input type="text" id="pulse" placeholder="补充：例 三部脉均沉" style="margin-top:6px">
+
+      <div class="sub-label">寒热</div>
+      <div class="symptom-chips" id="chip-coldheat"></div>
+
+      <div class="sub-label">汗</div>
+      <div class="symptom-chips" id="chip-sweat"></div>
+
+      <div class="sub-label">二便</div>
+      <div class="symptom-chips" id="chip-bowel"></div>
+
+      <div class="sub-label">腹诊</div>
+      <div class="symptom-chips" id="chip-abdomen"></div>
+
+      <div class="sub-label">口味 / 渴</div>
+      <div class="symptom-chips" id="chip-thirst"></div>
+
+      <div class="sub-label">面色 / 形态</div>
+      <div class="symptom-chips" id="chip-face"></div>
     </div>
 
     <button class="primary" id="btn-diagnose">开始辨证</button>
@@ -375,35 +407,122 @@ function buildIndex() {
 /* =====================================================
    辨证规则引擎
    ===================================================== */
+// 胡希恕方证对应：脉象 -> 方剂（按胡老讲座/医案总结）
+// 权重：脉象命中 +3，主症命中 +1，组合命中 +5
+const PULSE_FORMULA_MAP = {
+  // 太阳病
+  '浮紧': ['麻黄汤', '葛根汤', '大青龙汤'],
+  '浮缓': ['桂枝汤', '桂枝加葛根汤', '桂枝加厚朴杏子汤'],
+  '浮数': ['麻黄汤', '桂枝汤', '银翘散', '桑菊饮'],
+  '浮弱': ['桂枝汤', '桂枝加附子汤'],
+  '浮滑': ['白虎汤', '小陷胸汤'],
+  '浮芤': ['炙甘草汤'],
+  '浮大': ['白虎汤', '白虎加人参汤'],
+  '浮虚': ['桂枝汤类'],
+  // 阳明病
+  '沉实': ['大承气汤', '小承气汤', '调胃承气汤'],
+  '沉弦': ['大承气汤', '小柴胡汤'],
+  '沉滑': ['小陷胸汤', '猪苓汤'],
+  '沉紧': ['大承气汤', '附子汤', '大黄附子汤'],
+  '沉迟': ['理中汤', '附子理中汤', '大承气汤'],
+  '沉细': ['四逆汤', '真武汤', '附子汤'],
+  // 少阳病
+  '弦': ['小柴胡汤', '四逆散', '柴胡桂枝汤', '柴胡加龙骨牡蛎汤'],
+  '弦细': ['小柴胡汤', '柴胡桂枝干姜汤', '一贯煎'],
+  '弦数': ['小柴胡汤', '龙胆泻肝汤'],
+  '弦滑': ['温胆汤', '小柴胡汤加味'],
+  '弦紧': ['四逆散', '柴胡桂枝汤', '痛泻要方'],
+  // 太阴病
+  '迟': ['理中汤', '附子理中汤', '四逆汤'],
+  '迟缓': ['理中汤', '黄芪建中汤', '小建中汤'],
+  '迟而有力': ['大承气汤', '附子理中汤'],
+  '迟而无力': ['理中汤', '四逆汤'],
+  '弱': ['四逆汤', '理中汤', '真武汤', '肾气丸'],
+  // 少阴病
+  '微': ['四逆汤', '通脉四逆汤', '白通汤'],
+  '微细': ['四逆汤', '麻黄附子细辛汤', '真武汤'],
+  '微欲绝': ['通脉四逆汤', '通脉四逆加猪胆汁汤', '四逆加人参汤'],
+  '微而数': ['少阴热化证', '黄连阿胶汤'],
+  '沉微': ['四逆汤', '通脉四逆汤'],
+  '沉弱': ['真武汤', '附子汤', '肾气丸'],
+  // 厥阴病
+  '沉伏': ['当归四逆汤', '通脉四逆汤', '乌梅丸'],
+  '细': ['四逆汤', '当归四逆汤', '炙甘草汤', '一贯煎'],
+  '细数': ['黄连阿胶汤', '天王补心丹', '知柏地黄丸'],
+  '细弱': ['真武汤', '肾气丸', '炙甘草汤'],
+  '细弦': ['一贯煎', '杞菊地黄丸', '柴胡疏肝散'],
+  // 水饮/痰
+  '滑': ['小陷胸汤', '二陈汤', '五苓散', '猪苓汤'],
+  '滑数': ['小陷胸汤', '温胆汤', '竹叶石膏汤'],
+  '弦滑': ['温胆汤', '柴胡加龙骨牡蛎汤', '半夏泻心汤'],
+  // 血瘀
+  '涩': ['血府逐瘀汤', '桃核承气汤', '抵当汤', '炙甘草汤'],
+  '细涩': ['血府逐瘀汤', '复方丹参饮', '一贯煎'],
+  '沉涩': ['桃核承气汤', '抵当汤', '大黄䗪虫丸'],
+  // 虚证
+  '虚': ['炙甘草汤', '归脾汤', '补中益气汤', '八珍汤'],
+  '结': ['炙甘草汤', '生脉散', '天王补心丹'],
+  '代': ['炙甘草汤', '天王补心丹', '生脉散'],
+  '促': ['炙甘草汤', '生脉散'],
+  '动': ['桂枝汤', '炙甘草汤', '奔豚汤'],
+  // 急危
+  '脉不出': ['通脉四逆汤', '通脉四逆加猪胆汁汤'],
+  '脉暴出': ['通脉四逆加猪胆汁汤', '独参汤'],
+  '脉不至': ['通脉四逆汤', '白通加猪胆汁汤'],
+  '脉乍紧': ['瓜蒌薤白白酒汤', '枳实薤白桂枝汤'],
+  '脉乍结': ['炙甘草汤'],
+  '脉阴阳俱紧': ['麻黄汤', '小青龙汤'],
+  // 妊娠
+  '关脉滑': ['桂枝茯苓丸', '当归芍药散', '温经汤'],
+  '尺脉滑': ['桂枝茯苓丸', '寿胎丸'],
+  '寸脉沉': ['理中汤', '附子理中汤', '肾气丸'],
+  '寸脉浮': ['桂枝汤', '麻黄汤', '小青龙汤'],
+  '尺脉沉': ['肾气丸', '真武汤', '右归丸'],
+  '尺脉浮': ['肾气丸', '六味地黄丸', '知柏地黄丸'],
+  // 复合方证
+  '数': ['白虎汤', '小柴胡汤', '银翘散', '黄连阿胶汤'],
+  '数而有力': ['白虎汤', '大承气汤', '黄连解毒汤'],
+  '数而无力': ['生脉散', '当归六黄汤', '知柏地黄丸'],
+  '紧': ['麻黄汤', '葛根汤', '小青龙汤', '附子汤'],
+  '缓': ['桂枝汤', '黄芪建中汤', '小建中汤'],
+  '濡': ['参苓白术散', '三仁汤', '香薷饮']
+};
+
 const RULES = [
   { meridian: '太阳', score: 0, need: ['发热', '恶寒'], desc: '太阳病提纲：发热恶寒并见' },
   { meridian: '太阳', score: 0, need: ['无汗', '脉浮'], desc: '太阳表实' },
   { meridian: '太阳', score: 0, need: ['汗出', '恶风'], desc: '太阳表虚（桂枝汤证）' },
   { meridian: '太阳', score: 0, need: ['项强', '无汗'], desc: '太阳刚痉（葛根汤证）' },
+  { meridian: '太阳', score: 0, need: ['喘', '无汗'], desc: '太阳表实（麻黄汤证）' },
 
   { meridian: '阳明', score: 0, need: ['大热', '大渴'], desc: '阳明经热（白虎汤证）' },
   { meridian: '阳明', score: 0, need: ['便秘', '潮热'], desc: '阳明腑实（承气汤证）' },
   { meridian: '阳明', score: 0, need: ['腹满痛', '便秘'], desc: '阳明里实' },
+  { meridian: '阳明', score: 0, need: ['脉沉实', '便秘'], desc: '阳明腑实（沉实脉主里实）' },
 
   { meridian: '少阳', score: 0, need: ['寒热往来', '胸胁苦满'], desc: '少阳病提纲（小柴胡汤证）' },
   { meridian: '少阳', score: 0, need: ['口苦', '咽干', '目眩'], desc: '少阳病提纲' },
   { meridian: '少阳', score: 0, need: ['心烦', '喜呕'], desc: '少阳枢机不利' },
+  { meridian: '少阳', score: 0, need: ['脉弦', '胸胁'], desc: '少阳弦脉（胡老方证）' },
 
   { meridian: '太阴', score: 0, need: ['腹满', '吐利'], desc: '太阴虚寒（理中汤证）' },
   { meridian: '太阴', score: 0, need: ['腹满', '不欲食'], desc: '太阴脾虚' },
+  { meridian: '太阴', score: 0, need: ['脉迟', '吐'], desc: '太阴虚寒' },
 
   { meridian: '少阴', score: 0, need: ['四肢厥冷', '脉微'], desc: '少阴阳虚（四逆汤证）' },
   { meridian: '少阴', score: 0, need: ['但欲寐', '脉微细'], desc: '少阴病提纲' },
   { meridian: '少阴', score: 0, need: ['下利', '肢冷'], desc: '少阴阳虚' },
+  { meridian: '少阴', score: 0, need: ['脉微欲绝'], desc: '少阴重证（通脉四逆汤）' },
 
   { meridian: '厥阴', score: 0, need: ['消渴', '气上撞心'], desc: '厥阴提纲（乌梅丸证）' },
   { meridian: '厥阴', score: 0, need: ['手足厥寒', '脉细'], desc: '厥阴血虚寒厥（当归四逆汤证）' }
 ];
 
-function diagnose(text, tongue, pulse) {
+function diagnose(text, tongue, pulse, allChips) {
+  // 拼装完整文本
   const input = (text + ' ' + tongue + ' ' + pulse).toLowerCase();
-  const matchedRules = [];
 
+  const matchedRules = [];
   RULES.forEach(rule => {
     const hits = rule.need.filter(n => input.includes(n.toLowerCase()));
     if (hits.length === rule.need.length) {
@@ -422,22 +541,53 @@ function diagnose(text, tongue, pulse) {
   const sortedMeridians = Object.entries(meridianScore)
     .sort((a, b) => b[1] - a[1]);
 
-  // 推荐方剂
+  // === 脉象→方剂映射（胡老方证核心）===
+  const pulseHit = new Map(); // 方名 -> 加分
+  Object.entries(PULSE_FORMULA_MAP).forEach(([pulseKey, formulas]) => {
+    // 同时支持「浮紧」和「脉浮紧」
+    const key1 = pulseKey;
+    const key2 = '脉' + pulseKey;
+    if (input.includes(key1) || input.includes(key2)) {
+      formulas.forEach(fn => {
+        pulseHit.set(fn, (pulseHit.get(fn) || 0) + 3);
+      });
+    }
+  });
+
+  // === 主症→方剂推荐 ===
   const recommended = [];
   sortedMeridians.slice(0, 3).forEach(([m, _]) => {
-    (MERIDIAN_INDEX[m] || []).slice(0, 5).forEach(f => {
+    (MERIDIAN_INDEX[m] || []).forEach(f => {
       let hit = 0;
       f.keywords.concat(f.symptoms, f.indications).forEach(k => {
         if (k && input.includes(k.toLowerCase())) hit++;
       });
       if (hit > 0) {
-        recommended.push({ formula: f, hit, meridian: m });
+        // 加脉象加权
+        const pulseScore = pulseHit.get(f.name) || 0;
+        recommended.push({
+          formula: f,
+          hit: hit + pulseScore,
+          pulseScore,
+          meridian: m
+        });
       }
     });
   });
+
+  // 把脉象直接命中的方剂（不在 top 3 经里）也带上
+  pulseHit.forEach((score, fname) => {
+    if (!recommended.find(r => r.formula.name === fname)) {
+      const f = FORMULAS.find(x => x.name === fname);
+      if (f) {
+        recommended.push({ formula: f, hit: score, pulseScore: score, meridian: f.six_meridian });
+      }
+    }
+  });
+
   recommended.sort((a, b) => b.hit - a.hit);
 
-  return { meridians: sortedMeridians, rules: matchedRules, recommended: recommended.slice(0, 8) };
+  return { meridians: sortedMeridians, rules: matchedRules, recommended: recommended.slice(0, 10) };
 }
 
 /* =====================================================
@@ -461,12 +611,15 @@ function renderResult(d) {
   });
 
   if (d.recommended.length > 0) {
-    html += '<h4 style="color:var(--primary);margin:14px 0 8px">推荐方剂（按症状相关度排序）</h4>';
+    html += '<h4 style="color:var(--primary);margin:14px 0 8px">推荐方剂（按方证对应相关度排序）</h4>';
     d.recommended.forEach(r => {
       const f = r.formula;
       const comp = Object.entries(f.composition).map(([k, v]) => `${k} ${v}`).join('、');
+      const pulseMark = r.pulseScore > 0
+        ? `<span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px">脉证 +${r.pulseScore}</span>`
+        : '';
       html += `<div class="result-item">
-        <h4>${f.name} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h4>
+        <h4>${f.name} ${pulseMark} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h4>
         <div class="meta">${f.formula_meaning} · ${f.source}</div>
         <div class="comp">组成：${comp}</div>
         <div class="meta" style="margin-top:4px">主症：${f.symptoms.slice(0, 4).join('、')}</div>
@@ -537,38 +690,138 @@ document.querySelectorAll('.tab').forEach(t => {
 });
 
 document.getElementById('btn-diagnose').onclick = () => {
-  const text = document.getElementById('symptom-text').value.trim();
+  // 拼装所有 chip 选中的内容到症状文本
+  const freeText = document.getElementById('symptom-text').value.trim();
   const tongue = document.getElementById('tongue').value.trim();
   const pulse = document.getElementById('pulse').value.trim();
+  // 收齐所有 chip 选中
+  const allChipsText = [];
+  allSelectedChips.forEach((set, containerId) => {
+    if (set.size > 0) allChipsText.push(Array.from(set).join('、'));
+  });
+  const chipCombined = allChipsText.join('；');
+  const text = (freeText + ' ' + chipCombined).trim();
+
   if (!text) {
-    alert('请先填写症状');
+    alert('请先填写或点选症状');
     return;
   }
-  const d = diagnose(text, tongue, pulse);
+  const d = diagnose(text, tongue, pulse, allSelectedChips);
   renderResult(d);
   document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
 };
 
-// 快捷症状 chips
-const chipsEl = document.getElementById('quick-symptoms');
-const selectedChips = new Set();
-QUICK_SYMPTOMS.forEach(s => {
-  const span = document.createElement('span');
-  span.className = 'chip';
-  span.textContent = s;
-  span.onclick = () => {
-    if (selectedChips.has(s)) {
-      selectedChips.delete(s);
-      span.classList.remove('selected');
-    } else {
-      selectedChips.add(s);
-      span.classList.add('selected');
-    }
-    const ta = document.getElementById('symptom-text');
-    ta.value = Array.from(selectedChips).join('、');
+// 通用 chip 组渲染器（带回写文本框）
+const allSelectedChips = new Map(); // 类别 -> Set
+
+function renderChips(containerId, items) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!allSelectedChips.has(containerId)) allSelectedChips.set(containerId, new Set());
+  const set = allSelectedChips.get(containerId);
+  items.forEach(s => {
+    const span = document.createElement('span');
+    span.className = 'chip';
+    span.textContent = s;
+    span.onclick = () => {
+      if (set.has(s)) {
+        set.delete(s);
+        span.classList.remove('selected');
+      } else {
+        set.add(s);
+        span.classList.add('selected');
+      }
+    };
+    container.appendChild(span);
+  });
+}
+
+// 自由输入（症状）chips
+renderChips('quick-symptoms', QUICK_SYMPTOMS);
+
+// 四诊 chips —— 全部按胡希恕六经辨证常用术语
+const TONGUE = [
+  '舌淡', '舌淡红', '舌尖红', '舌红', '舌红绛', '舌紫暗', '舌有瘀点',
+  '苔白', '苔白腻', '苔白厚', '苔薄白', '苔黄', '苔黄腻', '苔黄燥', '苔灰黑', '苔水滑', '少苔', '剥苔',
+  '舌胖大', '舌有齿痕', '舌嫩', '舌瘦薄', '舌下络脉迂曲'
+];
+// 脉象 chips —— 按胡希恕方证对应规律扩充
+const PULSE = [
+  // 单一脉
+  '浮', '沉', '迟', '数', '缓', '紧', '弦', '滑', '涩', '细', '微', '弱', '濡',
+  '促', '结', '代', '革', '牢', '虚', '实', '动', '疾', '长', '短',
+  // 浮脉系列（主表）
+  '浮紧', '浮缓', '浮数', '浮滑', '浮细', '浮弱', '浮芤', '浮大', '浮虚',
+  // 沉脉系列（主里）
+  '沉紧', '沉迟', '沉细', '沉微', '沉弦', '沉滑', '沉涩', '沉弱', '沉实', '沉伏',
+  // 弦脉系列（主肝胆/少阳/痛/痰）
+  '弦细', '弦滑', '弦数', '弦紧', '弦迟', '弦而有力', '弦而无力',
+  // 数脉系列（主热）
+  '滑数', '细数', '数而有力', '数而无力',
+  // 迟脉系列（主寒）
+  '迟而有力', '迟而无力', '迟缓',
+  // 细/微/弱脉（主虚）
+  '细数', '细弱', '细涩', '细弦', '细缓', '细而无力',
+  '微细', '微欲绝', '微而数', '微弱', '微浮',
+  // 复合/特殊脉
+  '寸关尺俱浮', '寸关尺俱沉', '寸脉浮尺脉沉', '寸脉沉尺脉浮',
+  '脉不浮不沉', '脉缓', '脉和', '脉平', '脉涩', '脉紧', '脉弦', '脉滑',
+  // 危重脉
+  '脉微欲绝', '脉不出', '脉暴出', '脉不至', '脉乍紧', '脉乍结', '脉静', '脉阴阳俱紧',
+  // 妊娠/特殊
+  '脉滑', '脉涩', '脉虚', '脉实', '脉动', '脉促', '脉结', '脉代',
+  // 寸口分部
+  '寸脉浮', '寸脉沉', '尺脉浮', '尺脉沉', '关上浮', '关上沉', '关脉浮', '关脉沉'
+];
+const COLDHEAT = [
+  '恶寒发热', '但寒不热', '但热不寒', '寒热往来', '身热不扬', '日晡潮热', '五心烦热', '骨蒸潮热',
+  '畏寒肢冷', '手足心热', '身大热', '身微热', '烦热', '恶风', '恶寒', '喜温', '喜凉', '背恶寒'
+];
+const SWEAT = [
+  '无汗', '微汗', '大汗', '汗出', '汗出恶风', '汗出不止', '冷汗', '战汗', '头汗', '手足心汗', '半身汗', '但头汗出', '黄汗'
+];
+const BOWEL = [
+  '便秘', '便干', '便溏', '泄泻', '下利', '下利清水', '下利脓血', '里急后重', '肛门灼热', '滑脱不禁', '五更泻',
+  '小便清长', '小便短赤', '小便不利', '小便频数', '小便涩痛', '癃闭', '余沥不尽', '夜尿多', '尿血'
+];
+const ABDOMEN = [
+  '心下痞', '心下痞硬', '心下痞满', '心下痛', '心下悸', '胸胁苦满', '胁下硬满', '少腹急结', '少腹硬满', '少腹满',
+  '腹满', '腹胀', '腹痛', '腹皮拘急', '腹冷', '腹中雷鸣', '绕脐痛', '小腹不仁'
+];
+const THIRST = [
+  '口不渴', '口渴', '口渴喜冷饮', '口渴喜热饮', '口渴不欲饮', '口干', '口苦', '口黏腻', '口臭', '口淡无味',
+  '噫气', '反酸', '烧心', '嗳气', '呕', '干呕', '吐', '欲吐', '不能食', '食不下', '消谷善饥', '饥不欲食'
+];
+const FACE = [
+  '面色㿠白', '面色苍白', '面色潮红', '面色晦暗', '面赤', '面青', '面黄', '面黑', '面目浮肿', '面色黧黑',
+  '精神萎靡', '神疲乏力', '气短懒言', '体倦', '形体消瘦', '形体肥胖', '身重', '身重难以转侧',
+  '但欲寐', '躁动不安', '烦躁', '谵语', '郑声', '喜忘', '善惊'
+];
+
+renderChips('chip-tongue', TONGUE);
+renderChips('chip-pulse', PULSE);
+renderChips('chip-coldheat', COLDHEAT);
+renderChips('chip-sweat', SWEAT);
+renderChips('chip-bowel', BOWEL);
+renderChips('chip-abdomen', ABDOMEN);
+renderChips('chip-thirst', THIRST);
+renderChips('chip-face', FACE);
+
+// 一键"全清"按钮
+(function addClearAll() {
+  const btn = document.createElement('button');
+  btn.className = 'secondary';
+  btn.textContent = '清空全部选择';
+  btn.style.marginTop = '12px';
+  btn.onclick = () => {
+    allSelectedChips.forEach(set => set.clear());
+    document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+    document.getElementById('symptom-text').value = '';
+    document.getElementById('tongue').value = '';
+    document.getElementById('pulse').value = '';
   };
-  chipsEl.appendChild(span);
-});
+  document.querySelector('#panel-consult .card:last-of-type').appendChild(btn);
+})();
 
 // 搜索
 let searchTimer = null;
