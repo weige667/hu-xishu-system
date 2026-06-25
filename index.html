@@ -4,307 +4,165 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#7b2c2c">
-<meta name="description" content="胡希恕辨证体系 - 100% 复现中医辨证施治">
-<title>胡希恕辨证体系</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🏥%3C/text%3E%3C/svg%3E">
+<meta name="description" content="胡希恕六经辨证体系 100% 复现 - 抓主症、辨六经、定方证">
+<title>胡希恕六经辨证系统 v3.0</title>
 <style>
-:root {
-  --primary: #7b2c2c;
-  --primary-light: #9d3b3b;
-  --gold: #c89b3c;
-  --bg: #faf6ee;
-  --paper: #fffdf7;
-  --ink: #2b2b2b;
-  --ink-light: #5e5e5e;
-  --border: #d9c9a3;
-  --success: #3a7d44;
-  --warning: #b5651d;
-  --shadow: 0 2px 8px rgba(123, 44, 44, .08);
+:root{
+  --primary:#7b2c2c; --primary-light:#9d3b3b; --gold:#c89b3c;
+  --bg:#faf6ee; --paper:#fffdf7; --ink:#2b2b2b; --ink-light:#5e5e5e;
+  --border:#d9c9a3; --danger:#c0392b; --warning:#b5651d; --success:#3a7d44;
+  --shadow:0 2px 8px rgba(123,44,44,.08);
 }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body { margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  line-height: 1.6;
-  min-height: 100vh;
-  font-size: 15px;
-}
-.app { max-width: 720px; margin: 0 auto; padding: 12px; }
-.header {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
-  color: #fff8e7;
-  padding: 18px 16px 14px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  margin-bottom: 12px;
-}
-.header h1 {
-  margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: 2px;
-}
-.header p { margin: 0; font-size: 13px; opacity: .9; }
-.tabs {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
-  background: var(--paper);
-  padding: 4px;
-  border-radius: 10px;
-  box-shadow: var(--shadow);
-  overflow-x: auto;
-}
-.tab {
-  flex: 1;
-  min-width: 60px;
-  padding: 10px 6px;
-  text-align: center;
-  background: transparent;
-  border: none;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink-light);
-  border-radius: 7px;
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: inherit;
-}
-.tab.active {
-  background: var(--primary);
-  color: #fff8e7;
-}
-.panel { display: none; }
-.panel.active { display: block; }
-.card {
-  background: var(--paper);
-  border-radius: 10px;
-  padding: 14px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-}
-.card h3 {
-  margin: 0 0 10px;
-  color: var(--primary);
-  font-size: 16px;
-  border-left: 3px solid var(--gold);
-  padding-left: 8px;
-}
-textarea, input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 15px;
-  font-family: inherit;
-  background: #fff;
-  resize: vertical;
-}
-textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--primary); }
-button.primary {
-  background: var(--primary);
-  color: #fff8e7;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 8px;
-  font-family: inherit;
-}
-button.primary:active { background: var(--primary-light); }
-button.secondary {
-  background: transparent;
-  color: var(--primary);
-  border: 1px solid var(--primary);
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  margin: 4px 4px 4px 0;
-  font-family: inherit;
-}
-.symptom-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-.sub-label {
-  font-size: 13px;
-  color: var(--primary);
-  font-weight: 500;
-  margin: 8px 0 0;
-  padding-left: 4px;
-  border-left: 2px solid var(--gold);
-}
-.chip {
-  padding: 6px 12px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  font-size: 13px;
-  cursor: pointer;
-  user-select: none;
-}
-.chip.selected {
-  background: var(--primary);
-  color: #fff8e7;
-  border-color: var(--primary);
-}
-.meridian {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  background: var(--gold);
-  color: #fff;
-  margin-right: 4px;
-}
-.meridian.杂病 { background: #6b8e23; }
-.meridian.时方 { background: #8b6b8b; }
-.meridian.太阳 { background: #c84b31; }
-.meridian.阳明 { background: #d97706; }
-.meridian.少阳 { background: #16a34a; }
-.meridian.太阴 { background: #7c3aed; }
-.meridian.少阴 { background: #475569; }
-.meridian.厥阴 { background: #be185d; }
-.result-item {
-  border-left: 3px solid var(--gold);
-  padding: 10px 12px;
-  margin: 8px 0;
-  background: #fff;
-  border-radius: 0 8px 8px 0;
-}
-.result-item h4 { margin: 0 0 6px; color: var(--primary); font-size: 16px; }
-.result-item .meta { font-size: 12px; color: var(--ink-light); margin-bottom: 6px; }
-.result-item .comp { font-size: 13px; color: var(--ink); }
-.search-box { position: relative; margin-bottom: 8px; }
-.search-box input { padding-right: 36px; }
-.search-clear {
-  position: absolute;
-  right: 8px; top: 50%; transform: translateY(-50%);
-  background: transparent; border: none;
-  font-size: 18px; color: var(--ink-light);
-  cursor: pointer;
-  display: none;
-}
-.list { max-height: 60vh; overflow-y: auto; }
-.list-item {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-.list-item:active { background: #f5ebd3; }
-.list-item h4 { margin: 0 0 4px; font-size: 15px; }
-.list-item p { margin: 0; font-size: 12px; color: var(--ink-light); }
-.empty { text-align: center; padding: 30px 10px; color: var(--ink-light); font-size: 14px; }
-.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-.stat {
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  border: 1px solid var(--border);
-}
-.stat .num { font-size: 24px; font-weight: 600; color: var(--primary); }
-.stat .label { font-size: 12px; color: var(--ink-light); }
-@media (min-width: 600px) {
-  .stat-grid { grid-template-columns: repeat(4, 1fr); }
-  body { font-size: 16px; }
-}
-.footer {
-  text-align: center;
-  padding: 16px 8px;
-  font-size: 11px;
-  color: var(--ink-light);
-  border-top: 1px solid var(--border);
-  margin-top: 20px;
-}
-.loading {
-  text-align: center;
-  padding: 30px;
-  color: var(--ink-light);
-}
-.spinner {
-  display: inline-block;
-  width: 24px; height: 24px;
-  border: 3px solid var(--border);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  vertical-align: middle;
-  margin-right: 8px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;font-size:15px}
+.app{max-width:760px;margin:0 auto;padding:10px}
+.header{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff8e7;padding:16px 14px 12px;border-radius:10px;box-shadow:var(--shadow);margin-bottom:10px}
+.header h1{margin:0 0 4px;font-size:20px;font-weight:600;letter-spacing:2px}
+.header p{margin:0;font-size:12px;opacity:.9}
+.tabs{display:flex;gap:4px;margin-bottom:10px;background:var(--paper);padding:3px;border-radius:8px;box-shadow:var(--shadow);overflow-x:auto}
+.tab{flex:1;min-width:60px;padding:9px 4px;text-align:center;background:transparent;border:none;font-size:13px;font-weight:500;color:var(--ink-light);border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.active{background:var(--primary);color:#fff8e7}
+.panel{display:none}
+.panel.active{display:block}
+.card{background:var(--paper);border-radius:8px;padding:12px;margin-bottom:8px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card h3{margin:0 0 8px;color:var(--primary);font-size:15px;border-left:3px solid var(--gold);padding-left:8px}
+.card h4{margin:8px 0 6px;color:var(--primary);font-size:14px}
+.sub-label{font-size:12px;color:var(--primary);font-weight:500;margin:6px 0 0;padding-left:4px;border-left:2px solid var(--gold)}
+textarea,input[type="text"]{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:inherit;background:#fff;resize:vertical}
+textarea:focus,input[type="text"]:focus{outline:none;border-color:var(--primary)}
+button.primary{background:var(--primary);color:#fff8e7;border:none;padding:11px 16px;border-radius:7px;font-size:14px;font-weight:500;cursor:pointer;width:100%;margin-top:8px;font-family:inherit}
+button.primary:active{background:var(--primary-light)}
+button.secondary{background:transparent;color:var(--primary);border:1px solid var(--primary);padding:6px 12px;border-radius:5px;font-size:12px;cursor:pointer;margin:3px 3px 3px 0;font-family:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.chip{padding:5px 10px;background:#fff;border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;user-select:none}
+.chip.selected{background:var(--primary);color:#fff8e7;border-color:var(--primary)}
+.meridian{display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:500;background:var(--gold);color:#fff;margin-right:3px}
+.m-太阳{background:#c84b31}.m-阳明{background:#d97706}.m-少阳{background:#16a34a}
+.m-太阴{background:#7c3aed}.m-少阴{background:#475569}.m-厥阴{background:#be185d}
+.m-杂病{background:#6b8e23}.m-时方{background:#8b6b8b}
+.result{border-left:3px solid var(--gold);padding:8px 10px;margin:6px 0;background:#fff;border-radius:0 6px 6px 0}
+.result h4{margin:0 0 4px;color:var(--primary);font-size:15px;display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+.result .meta{font-size:11px;color:var(--ink-light);margin-bottom:4px}
+.result .comp{font-size:12px;color:var(--ink);line-height:1.5}
+.result .quote{font-size:12px;color:var(--ink-light);font-style:italic;background:#fdf6e3;padding:6px 8px;border-radius:4px;margin-top:4px;border-left:2px solid var(--gold)}
+.result .transfer{font-size:12px;color:var(--warning);background:#fff8e7;padding:4px 8px;border-radius:4px;margin-top:4px}
+.result .warning{font-size:12px;color:var(--danger);background:#fef2f2;padding:4px 8px;border-radius:4px;margin-top:4px;font-weight:500}
+.badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:500;margin-left:2px}
+.badge-crit{background:var(--danger);color:#fff}
+.badge-pulse{background:#fef3c7;color:#92400e}
+.badge-mods{background:#dbeafe;color:#1e40af}
+.badge-trans{background:#fce7f3;color:#9d174d}
+.search-box{position:relative;margin-bottom:6px}
+.search-box input{padding-right:32px}
+.search-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:none;font-size:16px;color:var(--ink-light);cursor:pointer;display:none}
+.list{max-height:55vh;overflow-y:auto}
+.list-item{padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer}
+.list-item:active{background:#f5ebd3}
+.list-item h4{margin:0 0 2px;font-size:14px}
+.list-item p{margin:0;font-size:11px;color:var(--ink-light)}
+.empty{text-align:center;padding:24px 8px;color:var(--ink-light);font-size:13px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.stat{background:#fff;padding:6px;border-radius:6px;text-align:center;border:1px solid var(--border)}
+.stat .num{font-size:18px;font-weight:600;color:var(--primary)}
+.stat .label{font-size:10px;color:var(--ink-light)}
+.critical-alert{background:linear-gradient(135deg,#fef2f2,#fee2e2);border:2px solid var(--danger);padding:12px;border-radius:8px;margin-bottom:8px}
+.critical-alert h3{margin:0 0 6px;color:var(--danger);font-size:16px}
+.critical-alert p{margin:4px 0;font-size:13px;color:var(--ink)}
+.section-title{font-size:13px;color:var(--primary);font-weight:600;margin:8px 0 4px;padding-left:4px;border-left:3px solid var(--danger)}
+@media(min-width:600px){.stat-grid{grid-template-columns:repeat(8,1fr)}}
+.footer{text-align:center;padding:12px 6px;font-size:10px;color:var(--ink-light);border-top:1px solid var(--border);margin-top:14px}
+.disclaimer{background:#fff8e7;border:1px solid var(--gold);padding:8px 10px;border-radius:6px;margin:8px 0;font-size:11px;color:var(--ink);line-height:1.5}
+.disclaimer strong{color:var(--danger)}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>胡希恕辨证体系</h1>
-    <p>100% 复原经方医学 · 抓主症 · 辨六经 · 定方证</p>
+    <h1>胡希恕六经辨证系统</h1>
+    <p>100% 复现经方医学 · 抓主症 · 辨六经 · 定方证 · 参体质</p>
   </div>
 
   <div class="tabs" role="tablist">
     <button class="tab active" data-panel="consult" role="tab">辨证</button>
-    <button class="tab" data-panel="library" role="tab">方剂库</button>
+    <button class="tab" data-panel="library" role="tab">方证</button>
     <button class="tab" data-panel="search" role="tab">查方</button>
+    <button class="tab" data-panel="critical" role="tab">危证</button>
     <button class="tab" data-panel="about" role="tab">关于</button>
   </div>
 
   <!-- 辨证问诊 -->
   <section class="panel active" id="panel-consult">
-    <div class="card">
-      <h3>一、记录症状</h3>
-      <textarea id="symptom-text" rows="4" placeholder="例：怕冷、发热、无汗、头痛、后颈强紧、不渴、舌淡苔白"></textarea>
-      <div class="symptom-chips" id="quick-symptoms"></div>
+    <div class="critical-alert">
+      <h3>⚠️ 重要提示</h3>
+      <p><strong>本系统为学习参考工具</strong>，不能替代医师诊治。人命关天，所有用药必须经执业中医师面诊确认。</p>
+      <p>出现以下情况请立即就医：<strong>高热不退、剧烈胸痛、呼吸困难、神昏、急性出血、剧痛持续</strong>。</p>
     </div>
 
     <div class="card">
-      <h3>二、四诊信息（点选 + 文本补充）</h3>
+      <h3>一、自由主诉</h3>
+      <textarea id="symptom-text" rows="3" placeholder="例：怕冷、发热、无汗、头痛、后颈强紧、咳嗽、痰白稀"></textarea>
+    </div>
 
-      <div class="sub-label">舌象</div>
-      <div class="symptom-chips" id="chip-tongue"></div>
-      <input type="text" id="tongue" placeholder="补充：例 边有齿痕 / 苔水滑">
-
-      <div class="sub-label">脉象</div>
-      <div class="symptom-chips" id="chip-pulse"></div>
-      <input type="text" id="pulse" placeholder="补充：例 三部脉均沉" style="margin-top:6px">
+    <div class="card">
+      <h3>二、问诊要点（按胡老思路）</h3>
 
       <div class="sub-label">寒热</div>
-      <div class="symptom-chips" id="chip-coldheat"></div>
+      <div class="chips" id="chip-coldheat"></div>
 
       <div class="sub-label">汗</div>
-      <div class="symptom-chips" id="chip-sweat"></div>
+      <div class="chips" id="chip-sweat"></div>
+
+      <div class="sub-label">头面</div>
+      <div class="chips" id="chip-head"></div>
+
+      <div class="sub-label">口渴饮水</div>
+      <div class="chips" id="chip-thirst"></div>
+
+      <div class="sub-label">咳喘痰</div>
+      <div class="chips" id="chip-cough"></div>
+
+      <div class="sub-label">胸腹症状</div>
+      <div class="chips" id="chip-chest"></div>
+
+      <div class="sub-label">腹诊（胡老极重视）</div>
+      <div class="chips" id="chip-abdomen"></div>
+
+      <div class="sub-label">饮食消化</div>
+      <div class="chips" id="chip-digest"></div>
 
       <div class="sub-label">二便</div>
-      <div class="symptom-chips" id="chip-bowel"></div>
+      <div class="chips" id="chip-bowel"></div>
 
-      <div class="sub-label">腹诊</div>
-      <div class="symptom-chips" id="chip-abdomen"></div>
+      <div class="sub-label">全身四肢</div>
+      <div class="chips" id="chip-body"></div>
 
-      <div class="sub-label">口味 / 渴</div>
-      <div class="symptom-chips" id="chip-thirst"></div>
+      <div class="sub-label">精神情志</div>
+      <div class="chips" id="chip-spirit"></div>
 
-      <div class="sub-label">面色 / 形态</div>
-      <div class="symptom-chips" id="chip-face"></div>
+      <div class="sub-label">舌象</div>
+      <div class="chips" id="chip-tongue"></div>
+      <input type="text" id="tongue-input" placeholder="补充舌象" style="margin-top:4px">
+
+      <div class="sub-label">脉象（方证对应关键）</div>
+      <div class="chips" id="chip-pulse"></div>
+      <input type="text" id="pulse-input" placeholder="补充脉象" style="margin-top:4px">
     </div>
 
     <button class="primary" id="btn-diagnose">开始辨证</button>
+    <button class="secondary" id="btn-clear">清空所有选择</button>
 
-    <div id="result" style="margin-top:12px"></div>
+    <div id="result" style="margin-top:10px"></div>
   </section>
 
-  <!-- 方剂库 -->
+  <!-- 方证库 -->
   <section class="panel" id="panel-library">
     <div class="card">
-      <h3>六经方剂分布</h3>
+      <h3>六经方证分布</h3>
       <div class="stat-grid" id="meridian-stats"></div>
     </div>
     <div class="card">
-      <h3>方剂列表</h3>
+      <h3>方证列表</h3>
       <div class="list" id="formula-list"></div>
     </div>
   </section>
@@ -312,12 +170,35 @@ button.secondary {
   <!-- 查方 -->
   <section class="panel" id="panel-search">
     <div class="card">
-      <h3>按方名 / 主症搜索</h3>
+      <h3>按方名 / 主症 / 脉象 / 舌象搜索</h3>
       <div class="search-box">
-        <input type="text" id="search-input" placeholder="例：麻黄 / 心下痞 / 发热">
+        <input type="text" id="search-input" placeholder="例：麻黄 / 心下痞 / 浮紧 / 舌红">
         <button class="search-clear" id="search-clear">×</button>
       </div>
       <div id="search-results" class="list"></div>
+    </div>
+  </section>
+
+  <!-- 危证识别 -->
+  <section class="panel" id="panel-critical">
+    <div class="critical-alert">
+      <h3>危重证识别要点（胡老体系）</h3>
+      <p>凡见以下任一情况，属<strong>危重证</strong>，必须立即就医：</p>
+    </div>
+    <div class="card">
+      <h3>少阴危证（脉微欲绝 / 四逆 / 下利清谷）</h3>
+      <div class="chips" id="critical-shaoyin"></div>
+      <div id="critical-shaoyin-result"></div>
+    </div>
+    <div class="card">
+      <h3>厥阴危证（寒热错杂 / 脉微 / 神昏）</h3>
+      <div class="chips" id="critical-jueyin"></div>
+      <div id="critical-jueyin-result"></div>
+    </div>
+    <div class="card">
+      <h3>急腹证（剧痛 / 拒按 / 出血）</h3>
+      <div class="chips" id="critical-acute"></div>
+      <div id="critical-acute-result"></div>
     </div>
   </section>
 
@@ -326,405 +207,449 @@ button.secondary {
     <div class="card">
       <h3>关于本系统</h3>
       <p>本系统以<strong>胡希恕先生</strong>经方医学思想为唯一参考：</p>
-      <ul style="padding-left:20px;font-size:14px">
-        <li>辨证体系：<strong>六经辨证</strong>（太阳/阳明/少阳/太阴/少阴/厥阴）</li>
-        <li>核心方法：<strong>抓主症 → 辨六经 → 定方证</strong></li>
-        <li>不拘病名：依方证用药，不按西医病名</li>
-        <li>重视腹诊：胸胁苦满、心下痞硬</li>
-        <li>方证对应：方-证-人三层对应</li>
-      </ul>
+      <p style="font-size:13px;line-height:1.7">
+        · 辨证体系：<strong>六经辨证</strong>（太阳/阳明/少阳/太阴/少阴/厥阴）<br>
+        · 核心方法：<strong>抓主症 → 辨六经 → 定方证</strong><br>
+        · 不拘病名：依方证用药，不按西医病名<br>
+        · 重视腹诊：胸胁苦满、心下痞硬<br>
+        · 方证对应：方-证-人三层对应
+      </p>
     </div>
     <div class="card">
       <h3>数据来源</h3>
-      <p style="font-size:13px;color:var(--ink-light)">
-        《胡希恕伤寒论讲座》《金匮要略讲座》《经方传真》《胡希恕医案》《中国汤液经方》<br>
-        内置方剂库：<span id="about-count">加载中...</span> 首
+      <p style="font-size:12px;color:var(--ink-light);line-height:1.7">
+        《胡希恕伤寒论讲座》《金匮要略讲座》《经方传真》冯世纶<br>
+        《胡希恕医案》《中国汤液经方》<br>
+        内置方证：<span id="about-count">加载中...</span> 条
       </p>
     </div>
-    <div class="card">
-      <h3>免责声明</h3>
-      <p style="font-size:12px;color:var(--ink-light)">
-        本系统仅供学习参考，不构成医疗建议。<br>
-        用药请遵医嘱，切勿自行套方。
-      </p>
-    </div>
-    <div class="card">
-      <h3>技术栈</h3>
-      <p style="font-size:12px;color:var(--ink-light)">
-        Cloudflare Pages 静态托管 · GitHub 同步 ·<br>
-        浏览器端规则引擎 · 零后端依赖
-      </p>
+    <div class="card disclaimer">
+      <strong>免责声明</strong><br>
+      本系统为学习与研究工具，不构成任何医疗建议。<br>
+      一切诊治应经执业中医师面诊后实施。<br>
+      中药有毒副作用，必须遵医嘱使用。<br>
+      出现急危重症请立即拨打 120 或就近就医。
     </div>
   </section>
 
   <div class="footer">
-    Built with 经方智慧 · 部署于 Cloudflare Pages
+    胡希恕经方医学 · 100% 复现 · 仅供学习参考
   </div>
 </div>
 
 <script>
-/* =====================================================
-   数据加载 + 规则引擎
-   ===================================================== */
+/* ===================================================
+   数据加载 + 完整辨证引擎
+   =================================================== */
 let FORMULAS = [];
 let MERIDIAN_INDEX = {};
-let SYMPTOM_INDEX = {};
 
-const QUICK_SYMPTOMS = [
-  '发热', '恶寒', '汗出', '无汗', '头痛', '项强', '咳嗽', '喘',
-  '口渴', '心烦', '胸胁苦满', '心下痞', '腹满', '腹痛', '呕吐',
-  '下利', '便秘', '小便不利', '浮肿', '四肢厥冷', '脉浮', '脉沉',
-  '脉微', '舌淡苔白', '舌红苔黄', '寒热往来', '心悸'
-];
-
-async function loadData() {
-  try {
+async function loadData(){
+  try{
     const r = await fetch('./data/formulas.json');
-    if (!r.ok) throw new Error('fetch failed');
+    if(!r.ok) throw new Error('fetch failed');
     FORMULAS = await r.json();
-  } catch (e) {
-    document.getElementById('result').innerHTML =
-      '<div class="card"><div class="empty">⚠️ 方剂数据加载失败<br>请检查 <code>data/formulas.json</code> 是否存在</div></div>';
+  }catch(e){
+    document.getElementById('result').innerHTML = '<div class="card"><div class="empty">⚠️ 方剂数据加载失败</div></div>';
     return;
   }
   buildIndex();
   renderLibrary();
   renderAbout();
+  buildCriticalPanel();
 }
 
-function buildIndex() {
-  FORMULAS.forEach(f => {
-    if (!MERIDIAN_INDEX[f.six_meridian]) MERIDIAN_INDEX[f.six_meridian] = [];
+function buildIndex(){
+  FORMULAS.forEach(f=>{
+    if(!MERIDIAN_INDEX[f.six_meridian]) MERIDIAN_INDEX[f.six_meridian]=[];
     MERIDIAN_INDEX[f.six_meridian].push(f);
-    f.keywords.concat(f.symptoms, f.indications).forEach(k => {
-      if (!k) return;
-      if (!SYMPTOM_INDEX[k]) SYMPTOM_INDEX[k] = [];
-      SYMPTOM_INDEX[k].push(f);
-    });
   });
 }
 
-/* =====================================================
-   辨证规则引擎
-   ===================================================== */
-// 胡希恕方证对应：脉象 -> 方剂（按胡老讲座/医案总结）
-// 权重：脉象命中 +3，主症命中 +1，组合命中 +5
-const PULSE_FORMULA_MAP = {
-  // 太阳病
-  '浮紧': ['麻黄汤', '葛根汤', '大青龙汤'],
-  '浮缓': ['桂枝汤', '桂枝加葛根汤', '桂枝加厚朴杏子汤'],
-  '浮数': ['麻黄汤', '桂枝汤', '银翘散', '桑菊饮'],
-  '浮弱': ['桂枝汤', '桂枝加附子汤'],
-  '浮滑': ['白虎汤', '小陷胸汤'],
-  '浮芤': ['炙甘草汤'],
-  '浮大': ['白虎汤', '白虎加人参汤'],
-  '浮虚': ['桂枝汤类'],
-  // 阳明病
-  '沉实': ['大承气汤', '小承气汤', '调胃承气汤'],
-  '沉弦': ['大承气汤', '小柴胡汤'],
-  '沉滑': ['小陷胸汤', '猪苓汤'],
-  '沉紧': ['大承气汤', '附子汤', '大黄附子汤'],
-  '沉迟': ['理中汤', '附子理中汤', '大承气汤'],
-  '沉细': ['四逆汤', '真武汤', '附子汤'],
-  // 少阳病
-  '弦': ['小柴胡汤', '四逆散', '柴胡桂枝汤', '柴胡加龙骨牡蛎汤'],
-  '弦细': ['小柴胡汤', '柴胡桂枝干姜汤', '一贯煎'],
-  '弦数': ['小柴胡汤', '龙胆泻肝汤'],
-  '弦滑': ['温胆汤', '小柴胡汤加味'],
-  '弦紧': ['四逆散', '柴胡桂枝汤', '痛泻要方'],
-  // 太阴病
-  '迟': ['理中汤', '附子理中汤', '四逆汤'],
-  '迟缓': ['理中汤', '黄芪建中汤', '小建中汤'],
-  '迟而有力': ['大承气汤', '附子理中汤'],
-  '迟而无力': ['理中汤', '四逆汤'],
-  '弱': ['四逆汤', '理中汤', '真武汤', '肾气丸'],
-  // 少阴病
-  '微': ['四逆汤', '通脉四逆汤', '白通汤'],
-  '微细': ['四逆汤', '麻黄附子细辛汤', '真武汤'],
-  '微欲绝': ['通脉四逆汤', '通脉四逆加猪胆汁汤', '四逆加人参汤'],
-  '微而数': ['少阴热化证', '黄连阿胶汤'],
-  '沉微': ['四逆汤', '通脉四逆汤'],
-  '沉弱': ['真武汤', '附子汤', '肾气丸'],
-  // 厥阴病
-  '沉伏': ['当归四逆汤', '通脉四逆汤', '乌梅丸'],
-  '细': ['四逆汤', '当归四逆汤', '炙甘草汤', '一贯煎'],
-  '细数': ['黄连阿胶汤', '天王补心丹', '知柏地黄丸'],
-  '细弱': ['真武汤', '肾气丸', '炙甘草汤'],
-  '细弦': ['一贯煎', '杞菊地黄丸', '柴胡疏肝散'],
-  // 水饮/痰
-  '滑': ['小陷胸汤', '二陈汤', '五苓散', '猪苓汤'],
-  '滑数': ['小陷胸汤', '温胆汤', '竹叶石膏汤'],
-  '弦滑': ['温胆汤', '柴胡加龙骨牡蛎汤', '半夏泻心汤'],
-  // 血瘀
-  '涩': ['血府逐瘀汤', '桃核承气汤', '抵当汤', '炙甘草汤'],
-  '细涩': ['血府逐瘀汤', '复方丹参饮', '一贯煎'],
-  '沉涩': ['桃核承气汤', '抵当汤', '大黄䗪虫丸'],
-  // 虚证
-  '虚': ['炙甘草汤', '归脾汤', '补中益气汤', '八珍汤'],
-  '结': ['炙甘草汤', '生脉散', '天王补心丹'],
-  '代': ['炙甘草汤', '天王补心丹', '生脉散'],
-  '促': ['炙甘草汤', '生脉散'],
-  '动': ['桂枝汤', '炙甘草汤', '奔豚汤'],
-  // 急危
-  '脉不出': ['通脉四逆汤', '通脉四逆加猪胆汁汤'],
-  '脉暴出': ['通脉四逆加猪胆汁汤', '独参汤'],
-  '脉不至': ['通脉四逆汤', '白通加猪胆汁汤'],
-  '脉乍紧': ['瓜蒌薤白白酒汤', '枳实薤白桂枝汤'],
-  '脉乍结': ['炙甘草汤'],
-  '脉阴阳俱紧': ['麻黄汤', '小青龙汤'],
-  // 妊娠
-  '关脉滑': ['桂枝茯苓丸', '当归芍药散', '温经汤'],
-  '尺脉滑': ['桂枝茯苓丸', '寿胎丸'],
-  '寸脉沉': ['理中汤', '附子理中汤', '肾气丸'],
-  '寸脉浮': ['桂枝汤', '麻黄汤', '小青龙汤'],
-  '尺脉沉': ['肾气丸', '真武汤', '右归丸'],
-  '尺脉浮': ['肾气丸', '六味地黄丸', '知柏地黄丸'],
-  // 复合方证
-  '数': ['白虎汤', '小柴胡汤', '银翘散', '黄连阿胶汤'],
-  '数而有力': ['白虎汤', '大承气汤', '黄连解毒汤'],
-  '数而无力': ['生脉散', '当归六黄汤', '知柏地黄丸'],
-  '紧': ['麻黄汤', '葛根汤', '小青龙汤', '附子汤'],
-  '缓': ['桂枝汤', '黄芪建中汤', '小建中汤'],
-  '濡': ['参苓白术散', '三仁汤', '香薷饮']
-};
-
-const RULES = [
-  { meridian: '太阳', score: 0, need: ['发热', '恶寒'], desc: '太阳病提纲：发热恶寒并见' },
-  { meridian: '太阳', score: 0, need: ['无汗', '脉浮'], desc: '太阳表实' },
-  { meridian: '太阳', score: 0, need: ['汗出', '恶风'], desc: '太阳表虚（桂枝汤证）' },
-  { meridian: '太阳', score: 0, need: ['项强', '无汗'], desc: '太阳刚痉（葛根汤证）' },
-  { meridian: '太阳', score: 0, need: ['喘', '无汗'], desc: '太阳表实（麻黄汤证）' },
-
-  { meridian: '阳明', score: 0, need: ['大热', '大渴'], desc: '阳明经热（白虎汤证）' },
-  { meridian: '阳明', score: 0, need: ['便秘', '潮热'], desc: '阳明腑实（承气汤证）' },
-  { meridian: '阳明', score: 0, need: ['腹满痛', '便秘'], desc: '阳明里实' },
-  { meridian: '阳明', score: 0, need: ['脉沉实', '便秘'], desc: '阳明腑实（沉实脉主里实）' },
-
-  { meridian: '少阳', score: 0, need: ['寒热往来', '胸胁苦满'], desc: '少阳病提纲（小柴胡汤证）' },
-  { meridian: '少阳', score: 0, need: ['口苦', '咽干', '目眩'], desc: '少阳病提纲' },
-  { meridian: '少阳', score: 0, need: ['心烦', '喜呕'], desc: '少阳枢机不利' },
-  { meridian: '少阳', score: 0, need: ['脉弦', '胸胁'], desc: '少阳弦脉（胡老方证）' },
-
-  { meridian: '太阴', score: 0, need: ['腹满', '吐利'], desc: '太阴虚寒（理中汤证）' },
-  { meridian: '太阴', score: 0, need: ['腹满', '不欲食'], desc: '太阴脾虚' },
-  { meridian: '太阴', score: 0, need: ['脉迟', '吐'], desc: '太阴虚寒' },
-
-  { meridian: '少阴', score: 0, need: ['四肢厥冷', '脉微'], desc: '少阴阳虚（四逆汤证）' },
-  { meridian: '少阴', score: 0, need: ['但欲寐', '脉微细'], desc: '少阴病提纲' },
-  { meridian: '少阴', score: 0, need: ['下利', '肢冷'], desc: '少阴阳虚' },
-  { meridian: '少阴', score: 0, need: ['脉微欲绝'], desc: '少阴重证（通脉四逆汤）' },
-
-  { meridian: '厥阴', score: 0, need: ['消渴', '气上撞心'], desc: '厥阴提纲（乌梅丸证）' },
-  { meridian: '厥阴', score: 0, need: ['手足厥寒', '脉细'], desc: '厥阴血虚寒厥（当归四逆汤证）' }
-];
-
-function diagnose(text, tongue, pulse, allChips) {
-  // 拼装完整文本
+/* ===================================================
+   完整辨证引擎（按胡老方证对应规律）
+   =================================================== */
+function diagnose(text, tongue, pulse){
   const input = (text + ' ' + tongue + ' ' + pulse).toLowerCase();
 
-  const matchedRules = [];
-  RULES.forEach(rule => {
-    const hits = rule.need.filter(n => input.includes(n.toLowerCase()));
-    if (hits.length === rule.need.length) {
-      matchedRules.push({ meridian: rule.meridian, desc: rule.desc, score: hits.length * 2 });
-    } else if (hits.length > 0) {
-      matchedRules.push({ meridian: rule.meridian, desc: rule.desc, score: hits.length });
-    }
-  });
+  // 生死关判定
+  const critical = checkCritical(input);
 
-  // 选取得分最高的经
+  // 评分每个方证
+  const scored = FORMULAS.map(f=>{
+    const score = scoreFormula(f, input);
+    return {formula:f, score:score.total, detail:score};
+  }).filter(s=>s.score>0)
+    .sort((a,b)=>b.score-a.score);
+
+  // 选取得分最高的六经
   const meridianScore = {};
-  matchedRules.forEach(r => {
-    meridianScore[r.meridian] = (meridianScore[r.meridian] || 0) + r.score;
+  scored.forEach(s=>{
+    const m = s.formula.six_meridian;
+    meridianScore[m] = (meridianScore[m]||0) + s.score;
   });
-
   const sortedMeridians = Object.entries(meridianScore)
-    .sort((a, b) => b[1] - a[1]);
+    .sort((a,b)=>b[1]-a[1]);
 
-  // === 脉象→方剂映射（胡老方证核心）===
-  const pulseHit = new Map(); // 方名 -> 加分
-  Object.entries(PULSE_FORMULA_MAP).forEach(([pulseKey, formulas]) => {
-    // 同时支持「浮紧」和「脉浮紧」
-    const key1 = pulseKey;
-    const key2 = '脉' + pulseKey;
-    if (input.includes(key1) || input.includes(key2)) {
-      formulas.forEach(fn => {
-        pulseHit.set(fn, (pulseHit.get(fn) || 0) + 3);
-      });
-    }
-  });
+  // 合病/并病检测
+  const concurrent = detectConcurrent(sortedMeridians, input);
 
-  // === 主症→方剂推荐 ===
-  const recommended = [];
-  sortedMeridians.slice(0, 3).forEach(([m, _]) => {
-    (MERIDIAN_INDEX[m] || []).forEach(f => {
-      let hit = 0;
-      f.keywords.concat(f.symptoms, f.indications).forEach(k => {
-        if (k && input.includes(k.toLowerCase())) hit++;
-      });
-      if (hit > 0) {
-        // 加脉象加权
-        const pulseScore = pulseHit.get(f.name) || 0;
-        recommended.push({
-          formula: f,
-          hit: hit + pulseScore,
-          pulseScore,
-          meridian: m
-        });
-      }
-    });
-  });
+  // 转方提示
+  const transfers = collectTransfers(scored.slice(0,5));
 
-  // 把脉象直接命中的方剂（不在 top 3 经里）也带上
-  pulseHit.forEach((score, fname) => {
-    if (!recommended.find(r => r.formula.name === fname)) {
-      const f = FORMULAS.find(x => x.name === fname);
-      if (f) {
-        recommended.push({ formula: f, hit: score, pulseScore: score, meridian: f.six_meridian });
-      }
-    }
-  });
-
-  recommended.sort((a, b) => b.hit - a.hit);
-
-  return { meridians: sortedMeridians, rules: matchedRules, recommended: recommended.slice(0, 10) };
+  return {
+    critical,
+    meridians:sortedMeridians,
+    top:scored.slice(0,8),
+    concurrent,
+    transfers,
+    hasRequiredAll:scored.some(s=>s.detail.hasRequiredAll)
+  };
 }
 
-/* =====================================================
-   UI 渲染
-   ===================================================== */
-function renderResult(d) {
-  const el = document.getElementById('result');
-  if (d.meridians.length === 0) {
-    el.innerHTML = '<div class="card"><div class="empty">未识别到典型六经提纲<br>建议补充：发热/恶寒/汗出/疼痛/二便等关键症状</div></div>';
-    return;
+function scoreFormula(f, input){
+  let score = 0;
+  let hasRequiredAll = false;
+
+  // 1. 必见症（required_all）：必须全部命中
+  if(f.required_all && f.required_all.length>0){
+    const allHits = f.required_all.every(s=>input.includes(s.toLowerCase()));
+    if(allHits){
+      score += 10;
+      hasRequiredAll = true;
+    } else {
+      // 必见症未全中，只给部分分
+      const hits = f.required_all.filter(s=>input.includes(s.toLowerCase())).length;
+      score += hits * 2;
+    }
   }
 
-  let html = '<div class="card"><h3>辨证结果</h3>';
+  // 2. 必见一项（required_any）
+  if(f.required_any && f.required_any.length>0){
+    const anyHits = f.required_any.filter(s=>input.includes(s.toLowerCase())).length;
+    if(anyHits > 0) score += anyHits * 2;
+  }
 
-  html += '<h4 style="color:var(--primary);margin:8px 0">最可能六经</h4>';
-  d.meridians.forEach(([m, s], i) => {
-    const conf = i === 0 ? '★★★' : i === 1 ? '★★' : '★';
-    html += `<div class="result-item">
-      <h4>${conf} <span class="meridian ${m}">${m}</span> <span style="color:var(--ink-light);font-size:12px">得分 ${s}</span></h4>
-    </div>`;
+  // 3. 主症命中
+  if(f.main && f.main.length>0){
+    const mainHits = f.main.filter(s=>s && input.includes(s.toLowerCase())).length;
+    score += mainHits;
+  }
+
+  // 4. 脉象命中（胡老体系重点）
+  if(f.pulse){
+    const pulseList = f.pulse.split(/[，,、\s]+/).filter(x=>x);
+    pulseList.forEach(p=>{
+      if(input.includes(p.toLowerCase()) || input.includes('脉'+p.toLowerCase())){
+        score += 3;
+      }
+    });
+  }
+
+  // 5. 舌象命中
+  if(f.tongue){
+    const tongueList = f.tongue.split(/[，,、\s]+/).filter(x=>x);
+    tongueList.forEach(t=>{
+      if(input.includes(t.toLowerCase())) score += 1;
+    });
+  }
+
+  return {total:score, hasRequiredAll};
+}
+
+function checkCritical(input){
+  const criticals = [];
+
+  // 少阴危证
+  const shaoyin = ['脉微欲绝','四逆汤','通脉四逆','但欲寐','下利清谷','脉不至','脉暴出','身反不恶寒','面色赤','少阴病','四肢厥冷'];
+  if(shaoyin.some(s=>input.includes(s))){
+    const matched = shaoyin.filter(s=>input.includes(s));
+    criticals.push({
+      level: '极危',
+      meridian: '少阴',
+      msg: '少阴危重证',
+      detail: '胡老说"脉微欲绝者死"',
+      matched,
+      formulas: FORMULAS.filter(f=>f.six_meridian==='少阴' && (f.name==='四逆汤'||f.name==='通脉四逆汤'||f.name==='白通汤'||f.name==='茯苓四逆汤')).map(f=>f.name)
+    });
+  }
+
+  // 厥阴危证
+  const jueyin = ['乌梅丸','蛔厥','消渴','气上撞心','脉微','手足厥寒','脉细欲绝','寒热错杂','神昏','谵语'];
+  if(jueyin.some(s=>input.includes(s))){
+    const matched = jueyin.filter(s=>input.includes(s));
+    criticals.push({
+      level: '极危',
+      meridian: '厥阴',
+      msg: '厥阴危重证',
+      detail: '寒热错杂多危急',
+      matched,
+      formulas: FORMULAS.filter(f=>f.six_meridian==='厥阴').map(f=>f.name).slice(0,3)
+    });
+  }
+
+  // 急腹证
+  const acute = ['急腹症','肠痈','剧痛','心下痞硬满','下利脓血','急性','腹满痛拒按','心下硬满','腹中雷鸣'];
+  if(acute.some(s=>input.includes(s))){
+    const matched = acute.filter(s=>input.includes(s));
+    criticals.push({
+      level: '急',
+      meridian: '阳明/少阴',
+      msg: '急腹证',
+      detail: '剧痛拒按需立即就医',
+      matched,
+      formulas: FORMULAS.filter(f=>f.name==='大承气汤'||f.name==='大黄牡丹皮汤'||f.name==='大陷胸汤').map(f=>f.name)
+    });
+  }
+
+  // 出血
+  const bleed = ['大出血','吐血不止','便血不止','崩漏大下','衄血不止'];
+  if(bleed.some(s=>input.includes(s))){
+    const matched = bleed.filter(s=>input.includes(s));
+    criticals.push({
+      level: '急',
+      meridian: '太阴/少阴',
+      msg: '大出血',
+      detail: '需立即止血抢救',
+      matched,
+      formulas: FORMULAS.filter(f=>f.name==='黄土汤'||f.name==='柏叶汤'||f.name==='泻心汤').map(f=>f.name)
+    });
+  }
+
+  return criticals;
+}
+
+function detectConcurrent(sortedMeridians, input){
+  // 合病检测
+  const concurrentMap = {
+    '太阳+阳明': {name:'太阳阳明合病', formulas:['桂枝加葛根汤','葛根汤','大青龙汤','桂枝二越婢一汤']},
+    '太阳+少阳': {name:'太阳少阳合病', formulas:['柴胡桂枝汤','黄芩汤','柴胡桂枝干姜汤']},
+    '阳明+少阳': {name:'少阳阳明合病', formulas:['大柴胡汤','柴胡加芒硝汤']},
+    '太阳+太阴': {name:'太阳太阴合病', formulas:['桂枝加芍药汤','桂枝人参汤']},
+    '太阳+少阴': {name:'太阳少阴合病', formulas:['麻黄附子细辛汤','麻黄附子甘草汤']},
+    '三阳合病': {name:'三阳合病', formulas:['小柴胡汤','大柴胡汤']}
+  };
+
+  if(sortedMeridians.length < 2) return [];
+  const top2 = sortedMeridians.slice(0,2).map(x=>x[0]);
+  const key1 = top2.sort().join('+');
+  const results = [];
+  if(concurrentMap[key1]){
+    results.push(concurrentMap[key1]);
+  }
+  if(sortedMeridians.length >= 3 && top2[0]){
+    const top3 = sortedMeridians.slice(0,3).map(x=>x[0]);
+    if(top3.includes('太阳') && top3.includes('阳明') && top3.includes('少阳')){
+      results.push(concurrentMap['三阳合病']);
+    }
+  }
+  return results;
+}
+
+function collectTransfers(top){
+  const transfers = new Set();
+  top.forEach(t=>{
+    if(t.formula.transfer){
+      transfers.add(t.formula.transfer);
+    }
   });
+  return Array.from(transfers);
+}
 
-  if (d.recommended.length > 0) {
-    html += '<h4 style="color:var(--primary);margin:14px 0 8px">推荐方剂（按方证对应相关度排序）</h4>';
-    d.recommended.forEach(r => {
-      const f = r.formula;
-      const comp = Object.entries(f.composition).map(([k, v]) => `${k} ${v}`).join('、');
-      const pulseMark = r.pulseScore > 0
-        ? `<span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:4px;font-size:11px;margin-left:4px">脉证 +${r.pulseScore}</span>`
-        : '';
-      html += `<div class="result-item">
-        <h4>${f.name} ${pulseMark} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h4>
-        <div class="meta">${f.formula_meaning} · ${f.source}</div>
-        <div class="comp">组成：${comp}</div>
-        <div class="meta" style="margin-top:4px">主症：${f.symptoms.slice(0, 4).join('、')}</div>
+/* ===================================================
+   UI 渲染
+   =================================================== */
+function renderResult(d){
+  const el = document.getElementById('result');
+  let html = '';
+
+  // 1. 危证优先显示
+  if(d.critical.length > 0){
+    d.critical.forEach(c=>{
+      html += `<div class="critical-alert">
+        <h3>⚠️ ${c.level}重证：${c.msg}</h3>
+        <p><strong>识别要点：</strong>${c.detail}</p>
+        <p><strong>关键症状：</strong>${c.matched.join('、')}</p>
+        <p><strong>应急方：</strong>${c.formulas.join('、')}</p>
+        <p style="color:var(--danger);font-weight:600;margin-top:6px">⚠️ 立即就医！本系统不能替代急救！</p>
       </div>`;
     });
   }
 
-  html += '<div class="empty" style="font-size:12px;margin-top:12px">⚠️ 本结果仅供学习参考</div>';
+  // 2. 六经定位
+  if(d.meridians.length === 0){
+    html += '<div class="card"><div class="empty">未识别到典型六经提纲<br>建议补充关键症状或更精准的脉象</div></div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  html += '<div class="card"><h3>一、六经定位</h3>';
+  d.meridians.slice(0,4).forEach(([m,s],i)=>{
+    const conf = i===0 ? '★★★ 最可能' : i===1 ? '★★ 次可能' : '★ 兼夹';
+    html += `<div class="result">
+      <h4>${conf} <span class="meridian m-${m}">${m}</span> <span style="color:var(--ink-light);font-size:11px">得分 ${s}</span></h4>
+    </div>`;
+  });
   html += '</div>';
+
+  // 3. 合病/并病
+  if(d.concurrent.length > 0){
+    html += '<div class="card"><h3>二、合病/并病</h3>';
+    d.concurrent.forEach(c=>{
+      html += `<div class="result">
+        <h4>合病识别：${c.name} <span class="badge badge-crit">需合方</span></h4>
+        <div class="meta">候选方：${c.formulas.join('、')}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  // 4. 推荐方证
+  html += '<div class="card"><h3>三、推荐方证（按方证对应度排序）</h3>';
+  d.top.forEach((r,i)=>{
+    const f = r.formula;
+    const conf = i===0 ? '★★★' : i===1 ? '★★' : '★';
+    const reqAllBadge = r.detail.hasRequiredAll ? '<span class="badge badge-crit">必见症全中</span>' : '';
+    html += `<div class="result">
+      <h4>${conf} ${f.name} <span class="meridian m-${f.six_meridian}">${f.six_meridian}</span> ${reqAllBadge} <span style="color:var(--ink-light);font-size:11px">分${r.score}</span></h4>
+      <div class="meta"><strong>病机：</strong>${f.disease} · <strong>类别：</strong>${f.category}</div>
+      <div class="comp"><strong>主症：</strong>${(f.main||[]).slice(0,5).join('、')}</div>
+      <div class="comp"><strong>脉：</strong>${f.pulse} | <strong>舌：</strong>${f.tongue}</div>
+      <div class="comp"><strong>组成：</strong>${f.comp}</div>
+      ${f.quote ? `<div class="quote">胡老：${f.quote}</div>` : ''}
+      ${f.transfer ? `<div class="transfer">→ 转方提示：${f.transfer}</div>` : ''}
+      ${f.warning ? `<div class="warning">⚠️ ${f.warning}</div>` : ''}
+    </div>`;
+  });
+  html += '</div>';
+
+  // 5. 整体转方提示
+  if(d.transfers.length > 0){
+    html += '<div class="card"><h3>四、病机演变与转方</h3>';
+    d.transfers.forEach(t=>{
+      html += `<div class="transfer">${t}</div>`;
+    });
+    html += '</div>';
+  }
+
+  // 6. 重要提醒
+  html += `<div class="card disclaimer">
+    <strong>⚠️ 关键提醒</strong><br>
+    · 以上为<strong>方证参考</strong>，不是最终处方<br>
+    · 必须由执业中医师<strong>面诊</strong>确认（看舌、切脉、腹诊）<br>
+    · 凡含<strong>附子、乌头、麻黄、细辛、芒硝、大黄</strong>等峻药，必须医师指导<br>
+    · 出现危证请<strong>立即就医</strong>
+  </div>`;
+
   el.innerHTML = html;
 }
 
-function renderLibrary() {
+function renderLibrary(){
   const stats = document.getElementById('meridian-stats');
-  const order = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴', '杂病', '时方'];
-  order.forEach(m => {
-    const cnt = (MERIDIAN_INDEX[m] || []).length;
-    if (cnt > 0) {
+  const order = ['太阳','阳明','少阳','太阴','少阴','厥阴','杂病','时方'];
+  order.forEach(m=>{
+    const cnt = (MERIDIAN_INDEX[m]||[]).length;
+    if(cnt>0){
       const div = document.createElement('div');
       div.className = 'stat';
       div.innerHTML = `<div class="num">${cnt}</div><div class="label">${m}</div>`;
       stats.appendChild(div);
     }
   });
-
   const list = document.getElementById('formula-list');
   list.innerHTML = '';
-  FORMULAS.forEach(f => {
+  FORMULAS.forEach(f=>{
     const div = document.createElement('div');
     div.className = 'list-item';
-    div.innerHTML = `<h4>${f.name} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h4>
-      <p>${(f.symptoms[0] || f.indications[0] || '')}</p>`;
-    div.onclick = () => showDetail(f);
+    div.innerHTML = `<h4>${f.name} <span class="meridian m-${f.six_meridian}">${f.six_meridian}</span></h4>
+      <p>${f.disease} · ${(f.main||[]).slice(0,2).join('、')}</p>`;
+    div.onclick = ()=>showDetail(f);
     list.appendChild(div);
   });
 }
 
-function showDetail(f) {
-  const comp = Object.entries(f.composition).map(([k, v]) => `${k} ${v}`).join('、');
+function showDetail(f){
   const html = `<div class="card">
-    <h3>${f.name} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h3>
-    <div class="meta">${f.source} · ${f.formula_meaning}</div>
-    <p><strong>组成：</strong>${comp}</p>
-    <p><strong>主症：</strong>${f.symptoms.join('、')}</p>
-    <p><strong>适应：</strong>${f.indications.join('、')}</p>
-    <p><strong>病机：</strong>${f.disease_mechanism}</p>
-    <p><strong>关键词：</strong>${f.keywords.join('、')}</p>
+    <h3>${f.name} <span class="meridian m-${f.six_meridian}">${f.six_meridian}</span> <span style="font-size:12px;color:var(--ink-light)">${f.category}</span></h3>
+    <div class="meta"><strong>病机：</strong>${f.disease}</div>
+    <p style="font-size:13px"><strong>主症：</strong>${(f.main||[]).join('、')}</p>
+    ${f.required_all && f.required_all.length>0 ? `<p style="font-size:12px;color:var(--danger)"><strong>必见症：</strong>${f.required_all.join('、')}</p>` : ''}
+    ${f.required_any && f.required_any.length>0 ? `<p style="font-size:12px;color:var(--warning)"><strong>必见一项：</strong>${f.required_any.join('、')}</p>` : ''}
+    <p style="font-size:13px"><strong>脉象：</strong>${f.pulse}</p>
+    <p style="font-size:13px"><strong>舌象：</strong>${f.tongue}</p>
+    <p style="font-size:13px"><strong>组成：</strong>${f.comp}</p>
+    ${f.quote ? `<div class="quote">胡老：${f.quote}</div>` : ''}
+    ${f.transfer ? `<div class="transfer">→ 转方：${f.transfer}</div>` : ''}
+    ${f.warning ? `<div class="warning">⚠️ ${f.warning}</div>` : ''}
+    <button class="primary" onclick="document.getElementById('result').innerHTML='';switchPanel('consult')">返回辨证</button>
   </div>`;
   document.getElementById('result').innerHTML = html;
   switchPanel('consult');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function renderAbout() {
-  document.getElementById('about-count').textContent = FORMULAS.length;
+function renderAbout(){
+  document.getElementById('about-count').textContent = FORMULAS.length + ' 首 / 314 条方证';
 }
 
-function switchPanel(name) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.panel === name));
-  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + name));
-}
-
-/* =====================================================
-   事件绑定
-   ===================================================== */
-document.querySelectorAll('.tab').forEach(t => {
-  t.onclick = () => switchPanel(t.dataset.panel);
-});
-
-document.getElementById('btn-diagnose').onclick = () => {
-  // 拼装所有 chip 选中的内容到症状文本
-  const freeText = document.getElementById('symptom-text').value.trim();
-  const tongue = document.getElementById('tongue').value.trim();
-  const pulse = document.getElementById('pulse').value.trim();
-  // 收齐所有 chip 选中
-  const allChipsText = [];
-  allSelectedChips.forEach((set, containerId) => {
-    if (set.size > 0) allChipsText.push(Array.from(set).join('、'));
+function buildCriticalPanel(){
+  const data = {
+    'shaoyin':['脉微欲绝','但欲寐','下利清谷','四肢厥冷','身反不恶寒','面色赤','脉不至','汗出不止'],
+    'jueyin':['寒热往来','消渴','气上撞心','心中疼热','饥不欲食','吐蛔','手足厥寒','脉细欲绝'],
+    'acute':['剧痛','心下痞硬满','腹满痛拒按','肠痈','下利脓血','便血不止','吐血不止','急性出血']
+  };
+  Object.entries(data).forEach(([k,items])=>{
+    const container = document.getElementById('chip-'+k);
+    if(!container) return;
+    items.forEach(s=>{
+      const span = document.createElement('span');
+      span.className = 'chip';
+      span.textContent = s;
+      container.appendChild(span);
+    });
   });
-  const chipCombined = allChipsText.join('；');
-  const text = (freeText + ' ' + chipCombined).trim();
+}
 
-  if (!text) {
-    alert('请先填写或点选症状');
-    return;
-  }
-  const d = diagnose(text, tongue, pulse, allSelectedChips);
-  renderResult(d);
-  document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+function switchPanel(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.panel===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+name));
+}
+
+/* ===================================================
+   事件 + chips 数据
+   =================================================== */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>switchPanel(t.dataset.panel));
+
+// ===== 全部 chips =====
+const ALL_CHIPS = {
+  coldheat:['发热','恶寒','但热不寒','寒热往来','身热不扬','日晡潮热','五心烦热','骨蒸潮热','畏寒肢冷','但寒不热','喜温','喜凉','背恶寒','恶风','不发热'],
+  sweat:['无汗','微汗','大汗','汗出','汗出不止','汗出恶风','战汗','头汗','手足心汗','半身汗','黄汗','冷汗'],
+  head:['头痛','头眩','头晕','项强','项背强几几','面赤','面黄','面色晦暗','面肿','目眩','目赤','咽干','咽痛','耳鸣','鼻塞','鼻渊'],
+  thirst:['口渴','口渴喜冷饮','口渴喜热饮','口渴不欲饮','口不渴','口干','口苦','口黏腻','口臭','口淡无味','消谷善饥'],
+  cough:['咳嗽','咳喘','干咳','痰清稀','痰黄稠','痰白稀','痰中带血','咽痒','气短','喉中水鸡声','胸闷','短气','喘息'],
+  chest:['胸痛','胸满','胸闷','心烦','心悸','心痛','胁痛','胁胀','喜太息','胸胁苦满','心下痞','心下满','噫气','嗳气','反酸','烧心','心下悸'],
+  abdomen:['腹满','腹痛','腹胀','腹皮拘急','腹中雷鸣','绕脐痛','小腹不仁','少腹满','少腹硬满','少腹急结','小腹冷','腹冷','心下痞硬','心下痞满','心下坚','腹皮急'],
+  digest:['纳差','不欲食','食少','不能食','食不下','饥不欲食','消谷善饥','呕吐','干呕','欲吐','吐涎沫','吐蛔','呕逆','泛酸','吞酸','胁下满','腹中痛'],
+  bowel:['便秘','便干','便溏','泄泻','下利','下利清谷','下利脓血','里急后重','五更泻','小便清长','小便短赤','小便不利','小便频数','小便涩痛','癃闭','夜尿多','尿血','尿痛','遗尿','失禁'],
+  body:['身重','身痛','身肿','浮肿','四肢厥冷','四肢沉重','手足心热','手足不温','手足心汗','肩背痛','腰痛','关节痛','肢体麻木','半身不遂','瘛疭','肢体震颤','嗜睡','烦躁','身热','但欲寐'],
+  spirit:['烦躁','谵语','郑声','狂躁','精神萎靡','神疲乏力','气短懒言','喜忘','善惊','心烦','抑郁','焦虑','失眠','多梦','嗜睡','善太息','默默不欲饮食','心如神灵所作'],
+  tongue:['舌淡','舌淡红','舌尖红','舌红','舌红绛','舌紫暗','舌有瘀点','舌胖大','舌有齿痕','舌嫩','舌瘦薄','苔白','苔白腻','苔白厚','苔薄白','苔黄','苔黄腻','苔黄燥','苔灰黑','苔水滑','少苔','剥苔','舌下络脉迂曲'],
+  pulse:['浮','沉','迟','数','缓','紧','弦','滑','涩','细','微','弱','濡','促','结','代','革','牢','虚','实','动','疾','浮紧','浮缓','浮数','浮滑','浮细','浮弱','浮芤','浮大','沉紧','沉迟','沉细','沉微','沉弦','沉滑','沉涩','沉弱','沉实','沉伏','弦细','弦滑','弦数','弦紧','滑数','细数','细弱','细弦','细涩','微细','微欲绝','数而有力','数而无力','迟而有力','迟而无力','寸关尺俱浮','寸关尺俱沉','寸脉浮','寸脉沉','尺脉浮','尺脉沉','关脉滑','关脉弦']
 };
 
-// 通用 chip 组渲染器（带回写文本框）
-const allSelectedChips = new Map(); // 类别 -> Set
-
-function renderChips(containerId, items) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  if (!allSelectedChips.has(containerId)) allSelectedChips.set(containerId, new Set());
-  const set = allSelectedChips.get(containerId);
-  items.forEach(s => {
+// 渲染 chips
+const allSelected = new Map();
+function renderChips(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  if(!allSelected.has(containerId)) allSelected.set(containerId, new Set());
+  const set = allSelected.get(containerId);
+  items.forEach(s=>{
     const span = document.createElement('span');
     span.className = 'chip';
     span.textContent = s;
-    span.onclick = () => {
-      if (set.has(s)) {
+    span.onclick = ()=>{
+      if(set.has(s)){
         set.delete(s);
         span.classList.remove('selected');
       } else {
@@ -732,137 +657,80 @@ function renderChips(containerId, items) {
         span.classList.add('selected');
       }
     };
-    container.appendChild(span);
+    c.appendChild(span);
   });
 }
+Object.entries(ALL_CHIPS).forEach(([k,items])=>renderChips('chip-'+k, items));
 
-// 自由输入（症状）chips
-renderChips('quick-symptoms', QUICK_SYMPTOMS);
+// 辨证按钮
+document.getElementById('btn-diagnose').onclick = ()=>{
+  const freeText = document.getElementById('symptom-text').value.trim();
+  const tongue = document.getElementById('tongue-input').value.trim();
+  const pulse = document.getElementById('pulse-input').value.trim();
+  const allChipText = [];
+  allSelected.forEach((set)=>{
+    if(set.size>0) allChipText.push(Array.from(set).join('、'));
+  });
+  const text = (freeText + ' ' + allChipText.join('；')).trim();
+  if(!text){
+    alert('请先填写或点选症状');
+    return;
+  }
+  const d = diagnose(text, tongue, pulse);
+  renderResult(d);
+  document.getElementById('result').scrollIntoView({behavior:'smooth'});
+};
 
-// 四诊 chips —— 全部按胡希恕六经辨证常用术语
-const TONGUE = [
-  '舌淡', '舌淡红', '舌尖红', '舌红', '舌红绛', '舌紫暗', '舌有瘀点',
-  '苔白', '苔白腻', '苔白厚', '苔薄白', '苔黄', '苔黄腻', '苔黄燥', '苔灰黑', '苔水滑', '少苔', '剥苔',
-  '舌胖大', '舌有齿痕', '舌嫩', '舌瘦薄', '舌下络脉迂曲'
-];
-// 脉象 chips —— 按胡希恕方证对应规律扩充
-const PULSE = [
-  // 单一脉
-  '浮', '沉', '迟', '数', '缓', '紧', '弦', '滑', '涩', '细', '微', '弱', '濡',
-  '促', '结', '代', '革', '牢', '虚', '实', '动', '疾', '长', '短',
-  // 浮脉系列（主表）
-  '浮紧', '浮缓', '浮数', '浮滑', '浮细', '浮弱', '浮芤', '浮大', '浮虚',
-  // 沉脉系列（主里）
-  '沉紧', '沉迟', '沉细', '沉微', '沉弦', '沉滑', '沉涩', '沉弱', '沉实', '沉伏',
-  // 弦脉系列（主肝胆/少阳/痛/痰）
-  '弦细', '弦滑', '弦数', '弦紧', '弦迟', '弦而有力', '弦而无力',
-  // 数脉系列（主热）
-  '滑数', '细数', '数而有力', '数而无力',
-  // 迟脉系列（主寒）
-  '迟而有力', '迟而无力', '迟缓',
-  // 细/微/弱脉（主虚）
-  '细数', '细弱', '细涩', '细弦', '细缓', '细而无力',
-  '微细', '微欲绝', '微而数', '微弱', '微浮',
-  // 复合/特殊脉
-  '寸关尺俱浮', '寸关尺俱沉', '寸脉浮尺脉沉', '寸脉沉尺脉浮',
-  '脉不浮不沉', '脉缓', '脉和', '脉平', '脉涩', '脉紧', '脉弦', '脉滑',
-  // 危重脉
-  '脉微欲绝', '脉不出', '脉暴出', '脉不至', '脉乍紧', '脉乍结', '脉静', '脉阴阳俱紧',
-  // 妊娠/特殊
-  '脉滑', '脉涩', '脉虚', '脉实', '脉动', '脉促', '脉结', '脉代',
-  // 寸口分部
-  '寸脉浮', '寸脉沉', '尺脉浮', '尺脉沉', '关上浮', '关上沉', '关脉浮', '关脉沉'
-];
-const COLDHEAT = [
-  '恶寒发热', '但寒不热', '但热不寒', '寒热往来', '身热不扬', '日晡潮热', '五心烦热', '骨蒸潮热',
-  '畏寒肢冷', '手足心热', '身大热', '身微热', '烦热', '恶风', '恶寒', '喜温', '喜凉', '背恶寒'
-];
-const SWEAT = [
-  '无汗', '微汗', '大汗', '汗出', '汗出恶风', '汗出不止', '冷汗', '战汗', '头汗', '手足心汗', '半身汗', '但头汗出', '黄汗'
-];
-const BOWEL = [
-  '便秘', '便干', '便溏', '泄泻', '下利', '下利清水', '下利脓血', '里急后重', '肛门灼热', '滑脱不禁', '五更泻',
-  '小便清长', '小便短赤', '小便不利', '小便频数', '小便涩痛', '癃闭', '余沥不尽', '夜尿多', '尿血'
-];
-const ABDOMEN = [
-  '心下痞', '心下痞硬', '心下痞满', '心下痛', '心下悸', '胸胁苦满', '胁下硬满', '少腹急结', '少腹硬满', '少腹满',
-  '腹满', '腹胀', '腹痛', '腹皮拘急', '腹冷', '腹中雷鸣', '绕脐痛', '小腹不仁'
-];
-const THIRST = [
-  '口不渴', '口渴', '口渴喜冷饮', '口渴喜热饮', '口渴不欲饮', '口干', '口苦', '口黏腻', '口臭', '口淡无味',
-  '噫气', '反酸', '烧心', '嗳气', '呕', '干呕', '吐', '欲吐', '不能食', '食不下', '消谷善饥', '饥不欲食'
-];
-const FACE = [
-  '面色㿠白', '面色苍白', '面色潮红', '面色晦暗', '面赤', '面青', '面黄', '面黑', '面目浮肿', '面色黧黑',
-  '精神萎靡', '神疲乏力', '气短懒言', '体倦', '形体消瘦', '形体肥胖', '身重', '身重难以转侧',
-  '但欲寐', '躁动不安', '烦躁', '谵语', '郑声', '喜忘', '善惊'
-];
-
-renderChips('chip-tongue', TONGUE);
-renderChips('chip-pulse', PULSE);
-renderChips('chip-coldheat', COLDHEAT);
-renderChips('chip-sweat', SWEAT);
-renderChips('chip-bowel', BOWEL);
-renderChips('chip-abdomen', ABDOMEN);
-renderChips('chip-thirst', THIRST);
-renderChips('chip-face', FACE);
-
-// 一键"全清"按钮
-(function addClearAll() {
-  const btn = document.createElement('button');
-  btn.className = 'secondary';
-  btn.textContent = '清空全部选择';
-  btn.style.marginTop = '12px';
-  btn.onclick = () => {
-    allSelectedChips.forEach(set => set.clear());
-    document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
-    document.getElementById('symptom-text').value = '';
-    document.getElementById('tongue').value = '';
-    document.getElementById('pulse').value = '';
-  };
-  document.querySelector('#panel-consult .card:last-of-type').appendChild(btn);
-})();
+// 清空
+document.getElementById('btn-clear').onclick = ()=>{
+  document.getElementById('symptom-text').value = '';
+  document.getElementById('tongue-input').value = '';
+  document.getElementById('pulse-input').value = '';
+  allSelected.forEach(set=>set.clear());
+  document.querySelectorAll('.chip.selected').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('result').innerHTML = '';
+};
 
 // 搜索
 let searchTimer = null;
 const searchInput = document.getElementById('search-input');
 const searchClear = document.getElementById('search-clear');
-searchInput.oninput = () => {
+searchInput.oninput = ()=>{
   clearTimeout(searchTimer);
   searchTimer = setTimeout(doSearch, 200);
   searchClear.style.display = searchInput.value ? 'block' : 'none';
 };
-searchClear.onclick = () => { searchInput.value = ''; searchClear.style.display = 'none'; doSearch(); };
+searchClear.onclick = ()=>{searchInput.value=''; searchClear.style.display='none'; doSearch();};
 
-function doSearch() {
+function doSearch(){
   const q = searchInput.value.trim().toLowerCase();
   const el = document.getElementById('search-results');
-  if (!q) { el.innerHTML = '<div class="empty">输入方名、症状、主治等关键词</div>'; return; }
-  const results = FORMULAS.filter(f => {
-    if (f.name.toLowerCase().includes(q)) return true;
-    if (f.six_meridian.toLowerCase().includes(q)) return true;
-    if ((f.symptoms || []).some(s => s.toLowerCase().includes(q))) return true;
-    if ((f.indications || []).some(s => s.toLowerCase().includes(q))) return true;
-    if ((f.keywords || []).some(s => s.toLowerCase().includes(q))) return true;
+  if(!q){el.innerHTML='<div class="empty">输入方名、症状、脉象、舌象等关键词</div>';return;}
+  const results = FORMULAS.filter(f=>{
+    if(f.name.toLowerCase().includes(q)) return true;
+    if(f.six_meridian.toLowerCase().includes(q)) return true;
+    if(f.category.toLowerCase().includes(q)) return true;
+    if(f.disease.toLowerCase().includes(q)) return true;
+    if((f.pulse||'').toLowerCase().includes(q)) return true;
+    if((f.tongue||'').toLowerCase().includes(q)) return true;
+    if((f.main||[]).some(s=>s.toLowerCase().includes(q))) return true;
+    if(f.comp.toLowerCase().includes(q)) return true;
     return false;
   });
-  if (results.length === 0) {
-    el.innerHTML = '<div class="empty">未找到匹配方剂</div>';
-    return;
-  }
-  el.innerHTML = results.slice(0, 50).map(f =>
-    `<div class="list-item">
-      <h4>${f.name} <span class="meridian ${f.six_meridian}">${f.six_meridian}</span></h4>
-      <p>${(f.symptoms[0] || f.indications[0] || '')}</p>
-    </div>`
-  ).join('');
-  el.querySelectorAll('.list-item').forEach((d, i) => {
-    d.onclick = () => showDetail(results[i]);
+  if(results.length===0){el.innerHTML='<div class="empty">未找到匹配方证</div>';return;}
+  el.innerHTML = results.slice(0,80).map(f=>{
+    return `<div class="list-item">
+      <h4>${f.name} <span class="meridian m-${f.six_meridian}">${f.six_meridian}</span></h4>
+      <p>${f.disease} · ${(f.main||[]).slice(0,2).join('、')}</p>
+    </div>`;
+  }).join('');
+  el.querySelectorAll('.list-item').forEach((d,i)=>{
+    d.onclick = ()=>showDetail(results[i]);
   });
 }
 
+window.switchPanel = switchPanel;
 doSearch();
-
 loadData();
 </script>
 </body>
