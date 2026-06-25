@@ -187,22 +187,50 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
   <!-- ===== 切诊 (脉诊 + 腹诊) ===== -->
   <div class="panel" id="t2">
     <div class="card">
-      <h3>脉诊 - 5 步引导 (胡老规范操作)</h3>
-      <div class="step-bar" id="step_bar">
-        <div class="step active" data-step="1">① 体位</div>
-        <div class="step" data-step="2">② 布指</div>
-        <div class="step" data-step="3">③ 总按</div>
-        <div class="step" data-step="4">④ 分部</div>
-        <div class="step" data-step="5">⑤ 填表</div>
-      </div>
-      <div id="step_content"></div>
+      <h3>脉诊操作 (胡老规范) - 折叠说明 ↓</h3>
+      <details style="margin:4px 0;font-size:11px">
+        <summary style="cursor:pointer;color:var(--primary);font-weight:500">📖 展开/收起 脉诊操作流程说明</summary>
+        <div class="method-card" style="margin-top:6px">
+          <strong>① 准备体位:</strong>
+          <ol>
+            <li>患者<strong>坐位或仰卧</strong>, 手臂自然舒展放平, 掌心向上</li>
+            <li>肘部与心脏保持同一水平, 腕下可垫脉枕</li>
+            <li>安静环境, 避开剧烈运动、饮酒、餐后</li>
+            <li>医生呼吸平稳, 宁神静气, 手暖</li>
+          </ol>
+          <strong>② 布指定位:</strong>
+          <ol>
+            <li><strong>中指</strong>按高骨(桡骨茎突)内侧 = <strong>关脉</strong></li>
+            <li><strong>食指</strong>(关前腕侧) = <strong>寸脉</strong></li>
+            <li><strong>无名指</strong>(关后肘侧) = <strong>尺脉</strong></li>
+            <li>三指呈<strong>弓形</strong>, 指腹(螺纹面)着脉, 平齐</li>
+            <li>指距: 臂长疏、臂短密, 小儿<strong>一指定三关</strong></li>
+          </ol>
+          <strong>③ 总按 (先看整体):</strong>
+          <ol>
+            <li>三指<strong>同时</strong>按三部 (寸关尺)</li>
+            <li>先<strong>浮取</strong>(轻) → 中取(不轻不重) → 沉取(重)</li>
+            <li>看三部脉象是否<strong>均匀、协调</strong>, 把握整体气血</li>
+            <li>确定整体脉象: 浮? 沉? 迟? 数? 弦? 弱?</li>
+          </ol>
+          <p style="color:var(--danger);font-weight:bold;margin-top:4px">⚠️ 胡老强调: 先总按看大势, 不要一开始就分部</p>
+          <strong>④ 分部 (再看细节):</strong>
+          <ol>
+            <li>分别单独按每一部: 寸 → 关 → 尺</li>
+            <li>每部都做<strong>浮中沉</strong>三候 (九候)</li>
+            <li>细察<strong>某一脏腑</strong>的虚实, 看哪一部异常</li>
+            <li>口诀: <strong>先总后单, 九候方彻</strong></li>
+          </ol>
+          <strong>脏腑对应:</strong> 左手 寸(心) 关(肝) 尺(肾) | 右手 寸(肺) 关(脾) 尺(命门)
+        </div>
+      </details>
     </div>
 
-    <div class="card" id="pulse_form_card" style="display:none">
-      <h3>脉诊填表 - 三部九候</h3>
+    <div class="card">
+      <h3>脉诊填表 - 三部九候 (点击表格 → 选脉象 → 填入)</h3>
       <div class="tab-group" style="display:flex;gap:2px;margin:4px 0">
-        <button class="hand-btn active" data-hand="L" onclick="switchHand('L', this)" style="flex:1;padding:6px;background:var(--cut);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer">左手 (心肝肾)</button>
-        <button class="hand-btn" data-hand="R" onclick="switchHand('R', this)" style="flex:1;padding:6px;background:#fff;color:var(--cut);border:1px solid var(--cut);border-radius:4px;font-size:11px;cursor:pointer">右手 (肺脾命门)</button>
+        <button class="hand-btn active" data-hand="L" onclick="switchHand('L', this)" style="flex:1;padding:7px;background:var(--cut);color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer;font-weight:500">← 左手 (心肝肾)</button>
+        <button class="hand-btn" data-hand="R" onclick="switchHand('R', this)" style="flex:1;padding:7px;background:#fff;color:var(--cut);border:1px solid var(--cut);border-radius:4px;font-size:12px;cursor:pointer;font-weight:500">右手 (肺脾命门) →</button>
       </div>
 
       <table class="pulse-table" id="pulse_table">
@@ -238,23 +266,24 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
       </table>
 
       <div class="pulse-picker" id="pulse_picker_wrap" style="display:none">
-        <div class="pulse-picker-title">选择脉象 (点击下方脉象填入选中格)</div>
+        <div class="pulse-picker-title">→ 选择脉象填入选中格 (点其他位置取消)</div>
         <div id="pulse_picker" class="chips"></div>
         <div style="margin-top:4px">
           <button class="secondary" onclick="cancelPick()">取消选择</button>
         </div>
       </div>
 
-      <div style="margin-top:6px">
-        <button class="primary" onclick="savePulse()">✓ 提交脉诊结果 (参与辨证)</button>
-        <button class="secondary" onclick="clearPulse()">清空脉诊</button>
+      <div style="margin-top:8px;display:flex;gap:5px">
+        <button class="primary" onclick="savePulse()" style="flex:1">✓ 提交脉诊</button>
+        <button class="secondary" onclick="clearPulse()">清空</button>
       </div>
 
       <div id="pulse_summary" style="margin-top:8px;font-size:11px"></div>
     </div>
 
     <div class="card">
-      <h3>26 脉速选 (胡老分类) - 直接点击加入辨证</h3>
+      <h3>26 脉速选 (点击直接加入辨证)</h3>
+      <p style="font-size:10px;color:var(--ink-light);margin:3px 0">💡 提示: 三部九候填表 + 这里速选, 一起用, 最快</p>
       <div class="sub-label">太过脉 (阳热实) - 主阳/热/实</div>
       <div class="chips" id="chips-pulse-tg"></div>
       <div class="sub-label">不及脉 (阴寒虚) - 主阴/寒/虚</div>
@@ -621,84 +650,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('search_formula').addEventListener('input', renderFormulaList);
   document.getElementById('search_case').addEventListener('input', renderCases);
 
-  // 脉诊 step 引导
-  document.querySelectorAll('.step').forEach(s => {
-    s.onclick = () => goStep(parseInt(s.dataset.step));
-  });
-
-  goStep(1);
+  // 脉诊 step 引导 已废弃
 });
 
 function goStep(n) {
-  CURRENT_STEP = n;
-  document.querySelectorAll('.step').forEach((s, i) => {
-    s.classList.remove('active', 'done');
-    if (i + 1 === n) s.classList.add('active');
-    else if (i + 1 < n) s.classList.add('done');
-  });
-
-  const content = document.getElementById('step_content');
-  const formCard = document.getElementById('pulse_form_card');
-
-  if (n < 5) {
-    formCard.style.display = 'none';
-    const steps = [
-      `<div class="method-card">
-        <strong>① 准备体位</strong>
-        <ol>
-          <li>患者<strong>坐位或仰卧</strong>, 手臂自然舒展放平, 掌心向上</li>
-          <li>肘部与心脏保持同一水平, 腕下可垫脉枕</li>
-          <li>安静环境, 避开剧烈运动、饮酒、餐后</li>
-          <li>医生呼吸平稳, 宁神静气, 手暖</li>
-        </ol>
-        <button class="primary" onclick="goStep(2)">下一步: 布指 →</button>
-      </div>`,
-      `<div class="method-card">
-        <strong>② 布指定位</strong>
-        <ol>
-          <li><strong>中指</strong>按高骨(桡骨茎突)内侧 = <strong>关脉</strong></li>
-          <li><strong>食指</strong>(关前腕侧) = <strong>寸脉</strong></li>
-          <li><strong>无名指</strong>(关后肘侧) = <strong>尺脉</strong></li>
-          <li>三指呈<strong>弓形</strong>, 指腹(螺纹面)着脉, 平齐</li>
-          <li>指距: 臂长疏、臂短密, 小儿<strong>一指定三关</strong></li>
-        </ol>
-        <button class="secondary" onclick="goStep(1)">← 上一步</button>
-        <button class="primary" onclick="goStep(3)">下一步: 总按 →</button>
-      </div>`,
-      `<div class="method-card">
-        <strong>③ 总按 (先看整体) - <span style="color:var(--danger)">关键步骤</span></strong>
-        <ol>
-          <li>三指<strong>同时</strong>按三部 (寸关尺)</li>
-          <li>先<strong>浮取</strong>(轻) → 中取(不轻不重) → 沉取(重)</li>
-          <li>看三部脉象是否<strong>均匀、协调</strong>, 把握整体气血</li>
-          <li>确定整体脉象: 浮? 沉? 迟? 数? 弦? 弱?</li>
-        </ol>
-        <p style="color:var(--primary);font-size:11px;margin-top:4px">⚠️ 胡老强调: <strong>先总按看大势</strong>, 不要一开始就分部</p>
-        <button class="secondary" onclick="goStep(2)">← 上一步</button>
-        <button class="primary" onclick="goStep(4)">下一步: 分部 →</button>
-      </div>`,
-      `<div class="method-card">
-        <strong>④ 分部 (再看细节)</strong>
-        <ol>
-          <li>分别单独按每一部: 寸 → 关 → 尺</li>
-          <li>每部都做<strong>浮中沉</strong>三候 (九候)</li>
-          <li>细察<strong>某一脏腑</strong>的虚实, 看哪一部异常</li>
-          <li>口诀: <strong>先总后单, 九候方彻</strong></li>
-        </ol>
-        <p style="color:var(--primary);font-size:11px;margin-top:4px">左手: 寸(心) 关(肝) 尺(肾) | 右手: 寸(肺) 关(脾) 尺(命门)</p>
-        <button class="secondary" onclick="goStep(3)">← 上一步</button>
-        <button class="primary" onclick="goStep(5)">下一步: 填表 →</button>
-      </div>`
-    ];
-    content.innerHTML = steps[n - 1];
-  } else {
-    formCard.style.display = 'block';
-    content.innerHTML = `<div class="method-card">
-      <strong>⑤ 填表</strong>
-      <p style="font-size:11px;margin:4px 0">点击下方表格的格子 → 选择脉象 → 自动填入</p>
-      <button class="secondary" onclick="goStep(4)">← 上一步</button>
-    </div>`;
-  }
+  // 已废弃,保留空函数防止外部调用报错
 }
 
 function switchHand(h, btn) {
