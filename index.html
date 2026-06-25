@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#7b2c2c">
-<meta name="description" content="胡希恕六经辨证体系 100% 复现 - 抓主症、辨六经、定方证">
-<title>胡希恕六经辨证系统 v4.0</title>
+<meta name="description" content="胡希恕六经辨证体系 100% 复现 - 四诊合参 表格化 - 314 方证">
+<title>胡希恕六经辨证系统 v4.1 - 四诊合参表</title>
 <style>
 :root{
   --primary:#7b2c2c; --primary-light:#9d3b3b; --gold:#c89b3c;
   --bg:#faf6ee; --paper:#fffdf7; --ink:#2b2b2b; --ink-light:#5e5e5e;
   --border:#d9c9a3; --danger:#c0392b; --warning:#b5651d; --success:#3a7d44;
-  --pulse:#8b5a3c; --tongue:#c84b31; --abdomen:#6b8e23;
+  --look:#c84b31; --hear:#d97706; --ask:#16a34a; --cut:#8b5a3c; --abdomen:#6b8e23;
   --shadow:0 2px 8px rgba(123,44,44,.08);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -19,32 +19,38 @@ html,body{margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;min-height:100vh;font-size:14px}
 .app{max-width:780px;margin:0 auto;padding:8px}
 .header{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff8e7;padding:14px 12px 10px;border-radius:10px;box-shadow:var(--shadow);margin-bottom:8px}
-.header h1{margin:0 0 4px;font-size:19px;font-weight:600;letter-spacing:2px}
+.header h1{margin:0 0 4px;font-size:18px;font-weight:600;letter-spacing:1.5px}
 .header p{margin:0;font-size:11px;opacity:.9}
-.tabs{display:flex;gap:3px;margin-bottom:8px;background:var(--paper);padding:3px;border-radius:8px;box-shadow:var(--shadow);overflow-x:auto}
-.tab{flex:1;min-width:54px;padding:8px 3px;text-align:center;background:transparent;border:none;font-size:12px;font-weight:500;color:var(--ink-light);border-radius:6px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tabs{display:flex;gap:3px;margin-bottom:8px;background:var(--paper);padding:3px;border-radius:8px;box-shadow:var(--shadow);overflow-x:auto;flex-wrap:nowrap}
+.tab{flex:1;min-width:48px;padding:7px 2px;text-align:center;background:transparent;border:none;font-size:11px;font-weight:500;color:var(--ink-light);border-radius:5px;cursor:pointer;white-space:nowrap;font-family:inherit}
 .tab.active{background:var(--primary);color:#fff8e7}
 .panel{display:none}
 .panel.active{display:block}
-.card{background:var(--paper);border-radius:8px;padding:10px;margin-bottom:7px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card{background:var(--paper);border-radius:7px;padding:10px;margin-bottom:7px;box-shadow:var(--shadow);border:1px solid var(--border)}
 .card h3{margin:0 0 6px;color:var(--primary);font-size:14px;border-left:3px solid var(--gold);padding-left:6px}
 .card h4{margin:6px 0 4px;color:var(--primary);font-size:13px}
 .sub-label{font-size:11px;color:var(--primary);font-weight:500;margin:5px 0 0;padding-left:4px;border-left:2px solid var(--gold)}
-textarea,input[type="text"],input[type="number"]{width:100%;padding:6px;border:1px solid var(--border);border-radius:5px;font-size:13px;font-family:inherit;background:#fff;resize:vertical}
+textarea,input[type="text"]{width:100%;padding:6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:inherit;background:#fff;resize:vertical}
 textarea:focus,input:focus{outline:none;border-color:var(--primary)}
-button.primary{background:var(--primary);color:#fff8e7;border:none;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-top:6px;font-family:inherit}
+button.primary{background:var(--primary);color:#fff8e7;border:none;padding:9px 12px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;width:100%;margin-top:6px;font-family:inherit}
 button.primary:active{background:var(--primary-light)}
-button.secondary{background:transparent;color:var(--primary);border:1px solid var(--primary);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;margin:2px;font-family:inherit}
-button.danger{background:var(--danger);color:#fff;border:none;padding:8px 12px;border-radius:5px;font-size:12px;cursor:pointer;margin:2px;font-family:inherit}
+button.secondary{background:transparent;color:var(--primary);border:1px solid var(--primary);padding:4px 8px;border-radius:4px;font-size:11px;cursor:pointer;margin:2px;font-family:inherit}
+button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;border-radius:5px;font-size:12px;cursor:pointer;margin:2px;font-family:inherit}
 .chips{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0}
-.chip{padding:4px 8px;background:#fff;border:1px solid var(--border);border-radius:12px;font-size:11px;cursor:pointer;user-select:none}
+.chip{padding:3px 8px;background:#fff;border:1px solid var(--border);border-radius:12px;font-size:11px;cursor:pointer;user-select:none}
 .chip.selected{background:var(--primary);color:#fff8e7;border-color:var(--primary)}
-.chip.pulse{background:#fff8e7;border-color:var(--pulse);color:var(--pulse)}
-.chip.pulse.selected{background:var(--pulse);color:#fff}
-.chip.tongue{background:#fef2f2;border-color:var(--tongue);color:var(--tongue)}
-.chip.tongue.selected{background:var(--tongue);color:#fff}
+.chip.pulse{background:#fff8e7;border-color:var(--cut);color:var(--cut)}
+.chip.pulse.selected{background:var(--cut);color:#fff}
+.chip.tongue{background:#fef2f2;border-color:var(--look);color:var(--look)}
+.chip.tongue.selected{background:var(--look);color:#fff}
 .chip.abdomen{background:#f5f5dc;border-color:var(--abdomen);color:#5a6b1a}
 .chip.abdomen.selected{background:var(--abdomen);color:#fff}
+.chip.look{background:#fef2f2;border-color:var(--look);color:var(--look)}
+.chip.look.selected{background:var(--look);color:#fff}
+.chip.hear{background:#fff3e0;border-color:var(--hear);color:var(--hear)}
+.chip.hear.selected{background:var(--hear);color:#fff}
+.chip.ask{background:#e8f5e8;border-color:var(--ask);color:var(--ask)}
+.chip.ask.selected{background:var(--ask);color:#fff}
 .meridian{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:500;background:var(--gold);color:#fff;margin-right:3px}
 .m-太阳{background:#c84b31}.m-阳明{background:#d97706}.m-少阳{background:#16a34a}
 .m-太阴{background:#7c3aed}.m-少阴{background:#475569}.m-厥阴{background:#be185d}
@@ -83,164 +89,179 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:8px 12px;b
 .disclaimer strong{color:var(--danger)}
 .footer{text-align:center;padding:10px 6px;font-size:10px;color:var(--ink-light);border-top:1px solid var(--border);margin-top:12px}
 
-/* 脉诊表格样式 */
+/* ====== 切诊脉诊表 - 分步引导 ====== */
+.step-bar{display:flex;gap:3px;margin:6px 0;font-size:10px}
+.step{flex:1;padding:6px 2px;background:#fff;border:1px solid var(--border);border-radius:4px;text-align:center;cursor:pointer}
+.step.active{background:var(--cut);color:#fff;border-color:var(--cut);font-weight:500}
+.step.done{background:#d4edda;color:#155724;border-color:#c3e6cb}
+
 .pulse-table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0;background:#fff}
-.pulse-table th,.pulse-table td{border:1px solid var(--border);padding:4px 3px;text-align:center;font-size:11px}
-.pulse-table th{background:var(--pulse);color:#fff;font-weight:500;font-size:11px}
-.pulse-table td{background:#fff8e7;cursor:pointer}
-.pulse-table td.selected{background:var(--pulse);color:#fff;font-weight:bold}
-.pulse-table td.head{background:#fdf6e3;font-weight:500;color:var(--ink)}
+.pulse-table th,.pulse-table td{border:1px solid var(--border);padding:6px 3px;text-align:center;font-size:11px}
+.pulse-table th{background:var(--cut);color:#fff;font-weight:500;font-size:10px}
+.pulse-table td{background:#fff8e7;cursor:pointer;min-height:30px;position:relative}
+.pulse-table td.head{background:#fdf6e3;font-weight:500;color:var(--ink);font-size:10px}
+.pulse-table td.active{outline:2px solid var(--danger);outline-offset:-2px;background:#fff3cd}
+.pulse-table td.filled{background:#d4edda;color:#155724;font-weight:500}
 .pulse-table caption{caption-side:top;text-align:left;padding:3px 0;font-size:11px;color:var(--ink-light);font-weight:500}
 
-.tab-group{display:flex;gap:2px;margin:4px 0;font-size:11px}
-.tab-group button{flex:1;padding:5px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:11px}
-.tab-group button.active{background:var(--pulse);color:#fff;border-color:var(--pulse)}
+.method-card{background:#fdf6e3;border:1px solid var(--gold);border-radius:5px;padding:8px;margin:6px 0;font-size:11px}
+.method-card strong{color:var(--primary);display:block;margin-bottom:3px}
+.method-card ol{margin:4px 0 0 18px;padding:0}
+.method-card li{margin:2px 0}
 
-.abdomen-map{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;margin:6px 0;font-size:11px}
-.abdomen-zone{padding:8px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;min-height:30px;display:flex;align-items:center;justify-content:center}
-.abdomen-zone.selected{background:var(--abdomen);color:#fff;border-color:var(--abdomen)}
-.abdomen-zone .zone-name{font-weight:500}
-.abdomen-zone .zone-state{font-size:9px;opacity:.7}
-
-.case-card{background:#fff8e7;border-left:3px solid var(--gold);padding:8px 10px;margin:5px 0;border-radius:0 5px 5px 0;font-size:12px}
-.case-card .case-title{font-weight:600;color:var(--primary);margin-bottom:3px;font-size:13px}
-.case-card .case-meta{font-size:10px;color:var(--ink-light);margin-bottom:4px}
-.case-card .case-pulse{background:#fff3cd;padding:2px 6px;border-radius:3px;display:inline-block;margin:2px 0;font-size:11px}
-.case-card .case-rx{background:#f0f0f0;padding:3px 6px;border-radius:3px;margin:2px 0;font-size:11px}
+.pulse-picker{background:#fff;border:1px solid var(--border);border-radius:5px;padding:6px;margin:6px 0}
+.pulse-picker-title{font-size:11px;color:var(--ink-light);margin-bottom:4px;font-weight:500}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>胡希恕六经辨证系统 v4.0</h1>
-    <p>100% 复现胡老辨证流程 · 314 方证 · 脉诊/腹诊/主症/舌诊 · 危证识别 · 医案对照</p>
+    <h1>胡希恕六经辨证系统 v4.1 - 四诊合参表</h1>
+    <p>100% 复现胡老辨证流程 · 314 方证 · 望闻问切四表 · 脉诊 先总按→再分部 · 危证识别 · 医案对照</p>
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="t1">辨证</button>
-    <button class="tab" data-tab="t2">脉诊表</button>
+    <button class="tab active" data-tab="t1">四诊表</button>
+    <button class="tab" data-tab="t2">切诊</button>
     <button class="tab" data-tab="t3">腹诊</button>
-    <button class="tab" data-tab="t4">查方</button>
-    <button class="tab" data-tab="t5">医案</button>
-    <button class="tab" data-tab="t6">危证</button>
+    <button class="tab" data-tab="t4">辨证</button>
+    <button class="tab" data-tab="t5">查方</button>
+    <button class="tab" data-tab="t6">医案</button>
     <button class="tab" data-tab="t7">流程</button>
   </div>
 
-  <!-- ===== 辨证主面板 ===== -->
+  <!-- ===== 四诊表 ===== -->
   <div class="panel active" id="t1">
     <div class="card">
-      <h3>① 收集四诊信息</h3>
-      <div class="sub-label">主诉 + 持续时间</div>
-      <textarea id="chief_complaint" rows="2" placeholder="如: 发热 3 天, 恶寒, 头痛, 无汗"></textarea>
-
-      <div class="sub-label">望诊 (面色、形态、舌象)</div>
-      <textarea id="observation" rows="2" placeholder="面色赤/苍白/晦暗; 形体胖瘦; 精神状态; 舌象另填"></textarea>
-
-      <div class="sub-label">闻诊 (声音、气味)</div>
-      <textarea id="hearing" rows="2" placeholder="语声高低、呼吸、咳嗽、呕吐物气味"></textarea>
-
-      <div class="sub-label">问诊 (寒热/汗/头身/胸腹/二便/饮食)</div>
-      <textarea id="inquiry" rows="3" placeholder="寒热往来? 汗出? 头痛? 胸胁满? 腹痛? 呕/下利? 饮食?"></textarea>
-
-      <div class="sub-label">切诊 → 详见 [脉诊表] 和 [腹诊] 选项卡</div>
-      <textarea id="pulldiag_short" rows="2" placeholder="或简记脉象: 浮紧/沉细/弦/洪大..."></textarea>
+      <h3>① 望诊表 (Look)</h3>
+      <div class="sub-label">面色</div>
+      <div class="chips" id="look-face"></div>
+      <div class="sub-label">形态</div>
+      <div class="chips" id="look-body"></div>
+      <div class="sub-label">舌质</div>
+      <div class="chips" id="look-tongue"></div>
+      <div class="sub-label">舌苔</div>
+      <div class="chips" id="look-coating"></div>
+      <textarea id="look_note" rows="2" placeholder="其他望诊: 神志、面色、形体、动态..." style="margin-top:6px"></textarea>
     </div>
 
     <div class="card">
-      <h3>② 辨证 - 胡老心法</h3>
-      <p style="font-size:11px;color:var(--ink-light);margin:4px 0">胡老原话: "经方治病的过程就是<strong>先辨六经继辨方证</strong>, 求得方证相应而治愈疾病"</p>
-      <p style="font-size:11px;color:var(--ink-light);margin:4px 0">点击症状 chip 后, 系统<strong>自动完成八纲 → 六经 → 方证</strong>三步定位</p>
-      <button class="primary" onclick="runDiagnose()">开始辨证 → 自动匹配方证</button>
-      <button class="secondary" onclick="clearAll()">清空</button>
+      <h3>② 闻诊表 (Listen/Smell)</h3>
+      <div class="sub-label">声音</div>
+      <div class="chips" id="hear-voice"></div>
+      <div class="sub-label">气味</div>
+      <div class="chips" id="hear-smell"></div>
+      <div class="sub-label">咳嗽</div>
+      <div class="chips" id="hear-cough"></div>
+      <textarea id="hear_note" rows="2" placeholder="其他闻诊: 语声、呼吸、呕吐物、排泄物气味..." style="margin-top:6px"></textarea>
     </div>
 
-    <div class="card" id="result_card" style="display:none">
-      <h3>③ 辨证结果</h3>
-      <div id="six_meridian_result"></div>
-      <div id="formula_results"></div>
-    </div>
-
-    <!-- 症状 chips (按部位分类) -->
     <div class="card">
-      <h3>症状速选 (点击后参与辨证)</h3>
+      <h3>③ 问诊表 (Ask) - 寒热/汗/头身/胸腹/二便/饮食/睡眠</h3>
       <div class="sub-label">寒热</div>
-      <div class="chips" id="chips-coldheat"></div>
+      <div class="chips" id="ask-coldheat"></div>
       <div class="sub-label">汗出</div>
-      <div class="chips" id="chips-sweat"></div>
+      <div class="chips" id="ask-sweat"></div>
       <div class="sub-label">头身</div>
-      <div class="chips" id="chips-head"></div>
+      <div class="chips" id="ask-head"></div>
       <div class="sub-label">胸腹</div>
-      <div class="chips" id="chips-chest"></div>
+      <div class="chips" id="ask-chest"></div>
       <div class="sub-label">二便</div>
-      <div class="chips" id="chips-bowel"></div>
-      <div class="sub-label">饮食神志</div>
-      <div class="chips" id="chips-mind"></div>
+      <div class="chips" id="ask-bowel"></div>
+      <div class="sub-label">饮食/神志/口</div>
+      <div class="chips" id="ask-mind"></div>
+      <div class="sub-label">睡眠</div>
+      <div class="chips" id="ask-sleep"></div>
+      <textarea id="ask_note" rows="2" placeholder="其他问诊: 妇女经带、既往史、家族史..." style="margin-top:6px"></textarea>
+    </div>
+
+    <div class="card">
+      <h3>④ 切诊 → 详见 [切诊] 选项卡 (脉诊+腹诊)</h3>
+      <p style="font-size:11px;color:var(--ink-light);margin:4px 0">脉诊分 <strong>5 步引导</strong>: 体位→布指→总按→分部→填表</p>
+      <textarea id="cut_short" rows="2" placeholder="或简记: 脉沉细/弦/洪大... 腹: 心下痞硬..."></textarea>
+      <button class="primary" onclick="runDiagnose()">📋 提交四诊 → 自动辨证匹配方证</button>
+      <button class="secondary" onclick="clearAll()">清空全部</button>
     </div>
   </div>
 
-  <!-- ===== 脉诊填表 ===== -->
+  <!-- ===== 切诊 (脉诊 + 腹诊) ===== -->
   <div class="panel" id="t2">
     <div class="card">
-      <h3>脉诊填表 - 三部九候 (胡老亲讲)</h3>
-      <p style="font-size:11px;color:var(--ink-light);margin:4px 0">点击格内脉象, 标记患者实际脉诊结果</p>
+      <h3>脉诊 - 5 步引导 (胡老规范操作)</h3>
+      <div class="step-bar" id="step_bar">
+        <div class="step active" data-step="1">① 体位</div>
+        <div class="step" data-step="2">② 布指</div>
+        <div class="step" data-step="3">③ 总按</div>
+        <div class="step" data-step="4">④ 分部</div>
+        <div class="step" data-step="5">⑤ 填表</div>
+      </div>
+      <div id="step_content"></div>
+    </div>
 
-      <div class="tab-group">
-        <button class="active" onclick="switchPulse('left', this)">左手</button>
-        <button onclick="switchPulse('right', this)">右手</button>
+    <div class="card" id="pulse_form_card" style="display:none">
+      <h3>脉诊填表 - 三部九候</h3>
+      <div class="tab-group" style="display:flex;gap:2px;margin:4px 0">
+        <button class="hand-btn active" data-hand="L" onclick="switchHand('L', this)" style="flex:1;padding:6px;background:var(--cut);color:#fff;border:none;border-radius:4px;font-size:11px;cursor:pointer">左手 (心肝肾)</button>
+        <button class="hand-btn" data-hand="R" onclick="switchHand('R', this)" style="flex:1;padding:6px;background:#fff;color:var(--cut);border:1px solid var(--cut);border-radius:4px;font-size:11px;cursor:pointer">右手 (肺脾命门)</button>
       </div>
 
       <table class="pulse-table" id="pulse_table">
-        <caption>左手 - 寸(心/肺) 关(肝/脾) 尺(肾/膀胱)</caption>
+        <caption id="pulse_caption">左手 - 寸(心) 关(肝) 尺(肾)</caption>
         <thead>
           <tr>
             <th>候</th>
-            <th>寸</th>
-            <th>关</th>
-            <th>尺</th>
+            <th>寸 (心/肺)</th>
+            <th>关 (肝/脾)</th>
+            <th>尺 (肾/命)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="head">浮取</td>
-            <td data-hand="L" data-pos="寸" data-depth="浮" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="关" data-depth="浮" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="尺" data-depth="浮" onclick="toggleCell(this)"></td>
+            <td class="head">浮取 (举)</td>
+            <td data-h="L" data-p="寸" data-d="浮" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="关" data-d="浮" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="尺" data-d="浮" onclick="pickCell(this)"></td>
           </tr>
           <tr>
-            <td class="head">中取</td>
-            <td data-hand="L" data-pos="寸" data-depth="中" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="关" data-depth="中" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="尺" data-depth="中" onclick="toggleCell(this)"></td>
+            <td class="head">中取 (寻)</td>
+            <td data-h="L" data-p="寸" data-d="中" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="关" data-d="中" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="尺" data-d="中" onclick="pickCell(this)"></td>
           </tr>
           <tr>
-            <td class="head">沉取</td>
-            <td data-hand="L" data-pos="寸" data-depth="沉" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="关" data-depth="沉" onclick="toggleCell(this)"></td>
-            <td data-hand="L" data-pos="尺" data-depth="沉" onclick="toggleCell(this)"></td>
+            <td class="head">沉取 (按)</td>
+            <td data-h="L" data-p="寸" data-d="沉" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="关" data-d="沉" onclick="pickCell(this)"></td>
+            <td data-h="L" data-p="尺" data-d="沉" onclick="pickCell(this)"></td>
           </tr>
         </tbody>
       </table>
 
-      <div class="sub-label">选择脉象 (点击选, 再点取消)</div>
-      <div id="pulse_picker" class="chips"></div>
+      <div class="pulse-picker" id="pulse_picker_wrap" style="display:none">
+        <div class="pulse-picker-title">选择脉象 (点击下方脉象填入选中格)</div>
+        <div id="pulse_picker" class="chips"></div>
+        <div style="margin-top:4px">
+          <button class="secondary" onclick="cancelPick()">取消选择</button>
+        </div>
+      </div>
 
       <div style="margin-top:6px">
         <button class="primary" onclick="savePulse()">✓ 提交脉诊结果 (参与辨证)</button>
         <button class="secondary" onclick="clearPulse()">清空脉诊</button>
       </div>
 
-      <div id="pulse_summary" style="margin-top:6px;font-size:11px"></div>
+      <div id="pulse_summary" style="margin-top:8px;font-size:11px"></div>
     </div>
 
     <div class="card">
-      <h3>26 种基本脉象 (胡老分类) - 速选</h3>
-      <div class="sub-label">太过脉 (阳热实)</div>
+      <h3>26 脉速选 (胡老分类) - 直接点击加入辨证</h3>
+      <div class="sub-label">太过脉 (阳热实) - 主阳/热/实</div>
       <div class="chips" id="chips-pulse-tg"></div>
-      <div class="sub-label">不及脉 (阴寒虚)</div>
+      <div class="sub-label">不及脉 (阴寒虚) - 主阴/寒/虚</div>
       <div class="chips" id="chips-pulse-bj"></div>
-      <div class="sub-label">微甚脉 (同脉程度)</div>
+      <div class="sub-label">微甚脉 (程度)</div>
       <div class="chips" id="chips-pulse-ws"></div>
-      <div class="sub-label">兼象脉 (复合脉)</div>
+      <div class="sub-label">兼象脉 (复合)</div>
       <div class="chips" id="chips-pulse-jx"></div>
     </div>
   </div>
@@ -249,22 +270,30 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:8px 12px;b
   <div class="panel" id="t3">
     <div class="card">
       <h3>腹诊 - 六大典型腹证</h3>
-      <p style="font-size:11px;color:var(--ink-light);margin:4px 0">胡老必做, 临床鉴别方证核心手段</p>
-
-      <div class="sub-label">腹部九区速选</div>
-      <div class="abdomen-map">
-        <div class="abdomen-zone" onclick="toggleZone(this, '心下')"><div><div class="zone-name">心下</div><div class="zone-state">胃脘</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '胸胁')"><div><div class="zone-name">胸胁</div><div class="zone-state">季肋</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '右胁')"><div><div class="zone-name">右胁</div><div class="zone-state">肝胆</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '脐上')"><div><div class="zone-name">脐上</div><div class="zone-state">悸动</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '脐周')"><div><div class="zone-name">脐周</div><div class="zone-state">腹直肌</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '左胁')"><div><div class="zone-name">左胁</div><div class="zone-state">脾胰</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '少腹')"><div><div class="zone-name">少腹</div><div class="zone-state">下焦</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '小腹')"><div><div class="zone-name">小腹</div><div class="zone-state">膀胱</div></div></div>
-        <div class="abdomen-zone" onclick="toggleZone(this, '腹皮')"><div><div class="zone-name">腹皮</div><div class="zone-state">紧张度</div></div></div>
+      <div class="method-card">
+        <strong>胡老腹诊操作流程:</strong>
+        <ol>
+          <li>患者<strong>仰卧</strong>, 两腿伸直, 双手放松; 医生坐或立于患者<strong>右侧</strong></li>
+          <li>手法<strong>轻柔, 由浅入深</strong></li>
+          <li>顺序: <strong>心下 → 胸胁 → 脐上 → 脐周 → 少腹</strong></li>
+          <li>观察: 腹壁形态、张力、压痛、抵抗、搏动、振水音</li>
+        </ol>
       </div>
 
-      <div class="sub-label">典型腹证速选</div>
+      <div class="sub-label">腹部九区</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:6px 0">
+        <div class="abdomen-zone" onclick="toggleZone(this, '心下')" data-zone="心下" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>心下</strong><br><span style="font-size:9px;color:var(--ink-light)">胃脘</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '胸胁')" data-zone="胸胁" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>胸胁</strong><br><span style="font-size:9px;color:var(--ink-light)">季肋</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '右胁')" data-zone="右胁" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>右胁</strong><br><span style="font-size:9px;color:var(--ink-light)">肝胆</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '脐上')" data-zone="脐上" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>脐上</strong><br><span style="font-size:9px;color:var(--ink-light)">悸动</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '脐周')" data-zone="脐周" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>脐周</strong><br><span style="font-size:9px;color:var(--ink-light)">腹直肌</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '左胁')" data-zone="左胁" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>左胁</strong><br><span style="font-size:9px;color:var(--ink-light)">脾胰</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '少腹')" data-zone="少腹" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>少腹</strong><br><span style="font-size:9px;color:var(--ink-light)">下焦</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '小腹')" data-zone="小腹" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>小腹</strong><br><span style="font-size:9px;color:var(--ink-light)">膀胱</span></div></div>
+        <div class="abdomen-zone" onclick="toggleZone(this, '腹皮')" data-zone="腹皮" style="padding:10px 4px;background:#fff;border:1px solid var(--border);border-radius:5px;text-align:center;cursor:pointer;font-size:11px"><div><strong>腹皮</strong><br><span style="font-size:9px;color:var(--ink-light)">紧张度</span></div></div>
+      </div>
+
+      <div class="sub-label">典型腹证 (点击选择)</div>
       <div class="chips" id="chips-abdomen"></div>
 
       <div style="margin-top:6px">
@@ -276,16 +305,31 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:8px 12px;b
     </div>
   </div>
 
-  <!-- ===== 查方 ===== -->
+  <!-- ===== 辨证结果 ===== -->
   <div class="panel" id="t4">
+    <div class="card" id="result_card" style="display:none">
+      <h3>辨证结果</h3>
+      <div id="six_meridian_result"></div>
+      <div id="formula_results"></div>
+      <button class="secondary" onclick="document.getElementById('result_card').style.display='none'">关闭结果</button>
+    </div>
+
+    <div class="card">
+      <h3>提示</h3>
+      <p style="font-size:12px">先在 [四诊表] 收集信息, 然后点击"提交四诊", 系统自动完成:</p>
+      <p style="font-size:11px;color:var(--ink-light)">① 危证识别 → ② 八纲 → ③ 六经 → ④ 方证匹配</p>
+    </div>
+  </div>
+
+  <!-- ===== 查方 ===== -->
+  <div class="panel" id="t5">
     <div class="card">
       <h3>查方 - 314 首方证</h3>
       <div class="search-box">
         <input type="text" id="search_formula" placeholder="搜方名/主症/脉象/舌象">
-        <button class="search-clear" id="clear_search" onclick="document.getElementById('search_formula').value='';renderFormulaList();this.style.display='none'">×</button>
       </div>
       <div class="chips" id="filter_meridian">
-        <span class="chip" data-m="all" onclick="filterMeridian('all', this)">全部</span>
+        <span class="chip selected" data-m="all" onclick="filterMeridian('all', this)">全部</span>
         <span class="chip" data-m="太阳" onclick="filterMeridian('太阳', this)">太阳</span>
         <span class="chip" data-m="阳明" onclick="filterMeridian('阳明', this)">阳明</span>
         <span class="chip" data-m="少阳" onclick="filterMeridian('少阳', this)">少阳</span>
@@ -299,158 +343,145 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:8px 12px;b
     </div>
   </div>
 
-  <!-- ===== 医案对照 ===== -->
-  <div class="panel" id="t5">
-    <div class="card">
-      <h3>胡老亲讲医案 (脉诊+腹诊+方证对照)</h3>
-      <div class="search-box">
-        <input type="text" id="search_case" placeholder="搜医案 (症状/方名)">
-      </div>
-      <div id="case_list"></div>
-    </div>
-  </div>
-
-  <!-- ===== 危证 ===== -->
+  <!-- ===== 医案 ===== -->
   <div class="panel" id="t6">
     <div class="card">
-      <h3>危证识别 (胡老强调"人命关天")</h3>
-      <div class="critical-alert">
-        <h3>⚠️ 少阴危证 (四逆 + 脉微细)</h3>
-        <p><strong>特征</strong>: 四肢厥冷 + 脉微细 + 但欲寐 + 下利清谷</p>
-        <p><strong>主方</strong>: 四逆汤 → 脉微欲绝转通脉四逆汤</p>
-        <p><strong>胡老原话</strong>: "亡阳则死, 此证最险, 一逆尚引日, 再逆促命期"</p>
+      <h3>胡老亲讲医案 (15 则)</h3>
+      <div class="search-box">
+        <input type="text" id="search_case" placeholder="搜医案">
       </div>
-      <div class="critical-alert">
-        <h3>⚠️ 厥阴危证 (寒热错杂 + 蛔厥)</h3>
-        <p><strong>特征</strong>: 消渴 + 气上撞心 + 心中疼热 + 饥而不欲食 + 食则吐蛔</p>
-        <p><strong>主方</strong>: 乌梅丸</p>
-        <p><strong>胡老原话</strong>: "寒热错杂, 上热下寒, 久则成劳"</p>
-      </div>
-      <div class="critical-alert">
-        <h3>⚠️ 急腹证 (大承气汤 / 大陷胸汤)</h3>
-        <p><strong>特征</strong>: 腹满痛拒按 + 潮热 + 谵语 + 大便不通 / 少腹硬满</p>
-        <p><strong>主方</strong>: 大承气汤 (急下存阴) / 大陷胸汤</p>
-        <p><strong>胡老案例</strong>: 70 多岁老妇人痢疾神昏谵语, 腹诊拒按 → 大承气汤一剂愈</p>
-      </div>
-      <div class="critical-alert">
-        <h3>⚠️ 大出血 / 脱证</h3>
-        <p><strong>特征</strong>: 吐血 / 衄血 / 便血 / 崩漏 + 面色苍白 + 脉芤/微细</p>
-        <p><strong>主方</strong>: 泻心汤 (实热) / 黄土汤 (虚寒) / 独参汤 (气脱)</p>
-        <p><strong>胡老原话</strong>: "急性失血, 中医有四法: 止血、消瘀、宁血、补虚"</p>
-      </div>
-      <div class="critical-alert">
-        <h3>⚠️ 阳虚外感 (麻黄附子细辛汤证)</h3>
-        <p><strong>特征</strong>: 无热恶寒 + 脉沉细 + 精神不振 (但欲寐)</p>
-        <p><strong>主方</strong>: 麻黄附子细辛汤 / 麻黄附子甘草汤</p>
-        <p><strong>胡老案例</strong>: 47 岁男, 感冒两天, 自觉无精神 + 两手逆冷 + 脉沉细 → 麻黄附子甘草汤加川芎</p>
-      </div>
+      <div id="case_list"></div>
     </div>
   </div>
 
   <!-- ===== 流程 ===== -->
   <div class="panel" id="t7">
     <div class="card">
-      <h3>胡老辨证六步法 (官方整理版)</h3>
-      <div class="sub-label">① 采集四诊</div>
-      <p style="font-size:11px;margin:3px 0">主动按诊断标准逐项排查, 不等病人诉说。例如发热: 有无恶寒? 身痛? 汗出? 鼻部症状?</p>
-      <div class="sub-label">② 辨病位</div>
-      <p style="font-size:11px;margin:3px 0">表 / 里 / 半表半里</p>
-      <div class="sub-label">③ 辨病性</div>
-      <p style="font-size:11px;margin:3px 0">阴 / 阳 (落实在寒热虚实)</p>
-      <div class="sub-label">④ 定六经</div>
-      <p style="font-size:11px;margin:3px 0">表阳 = 太阳 / 表阴 = 少阴 / 里阳 = 阳明 / 里阴 = 太阴 / 半阳 = 少阳 / 半阴 = 厥阴</p>
-      <div class="sub-label">⑤ 定治法</div>
-      <p style="font-size:11px;margin:3px 0">太阳 = 汗 / 阳明 = 清下 / 少阳 = 和 / 太阴 = 温 / 少阴 = 温 / 厥阴 = 寒热并用</p>
-      <div class="sub-label">⑥ 细辨方证</div>
-      <p style="font-size:11px;margin:3px 0">抓主症 → 定方 → 加减用药</p>
+      <h3>胡老辨证六步法</h3>
+      <div class="method-card">
+        <ol>
+          <li><strong>采集四诊</strong> - 主动按诊断标准逐项排查 (问+望+闻+切)</li>
+          <li><strong>辨病位</strong> - 表 / 里 / 半表半里</li>
+          <li><strong>辨病性</strong> - 阴 / 阳 (寒热虚实)</li>
+          <li><strong>定六经</strong> - 病位×病性 = 六经之一</li>
+          <li><strong>定治法</strong> - 汗/吐/下/和/温/清/补/消</li>
+          <li><strong>细辨方证</strong> - 抓主症 → 定方 → 加减</li>
+        </ol>
+      </div>
     </div>
 
     <div class="card">
-      <h3>脉诊操作流程 (胡老亲讲《讲仲景脉学》)</h3>
-      <div class="sub-label">调息平脉</div>
-      <p style="font-size:11px;margin:3px 0">心中先有"平脉"标准 (老壮儿童、男女肥瘦、四时平脉均不同)</p>
-      <div class="sub-label">三部定位</div>
-      <p style="font-size:11px;margin:3px 0">中指按高骨 = 关, 食指(前) = 寸, 无名指(后) = 尺</p>
-      <div class="sub-label">三候取脉</div>
-      <p style="font-size:11px;margin:3px 0">浮取 (轻下指) / 中取 (不轻不重) / 沉取 (重下指) → 三部九候</p>
-      <div class="sub-label">循序细审</div>
-      <p style="font-size:11px;margin:3px 0">脉动 (位置+至数) / 脉体 (力量+广度) / 血行 (畅滞) → 逐一审查, 不可二用</p>
-      <div class="sub-label">太过与不及</div>
-      <p style="font-size:11px;margin:3px 0">太过 (浮数实大滑) → 阳热实; 不及 (沉迟虚细涩) → 阴寒虚</p>
+      <h3>脉诊操作 (胡老规范) - 5 步</h3>
+      <div class="method-card">
+        <strong>① 准备体位:</strong>
+        <ol>
+          <li>患者<strong>坐位或仰卧</strong>, 手臂自然舒展放平, 掌心向上</li>
+          <li>肘部与心脏保持同一水平, 腕下可垫脉枕</li>
+          <li>安静环境, 避开剧烈运动、饮酒、餐后</li>
+        </ol>
+        <strong>② 布指定位:</strong>
+        <ol>
+          <li>中指按高骨(桡骨茎突)内侧 = <strong>关</strong></li>
+          <li>食指(关前腕侧) = <strong>寸</strong></li>
+          <li>无名指(关后肘侧) = <strong>尺</strong></li>
+          <li>三指弓形, 指腹着脉, 平齐</li>
+        </ol>
+        <strong>③ 总按 (先看整体):</strong>
+        <ol>
+          <li>三指<strong>同时</strong>按三部 (寸关尺)</li>
+          <li>先浮取(轻) → 中取(不轻不重) → 沉取(重)</li>
+          <li>看三部脉象是否<strong>均匀、协调</strong>, 把握整体气血</li>
+        </ol>
+        <strong>④ 单按 (再看分部):</strong>
+        <ol>
+          <li>分别单独按每一部 (寸→关→尺), 每部都做浮中沉</li>
+          <li>细察<strong>某一脏腑</strong>的虚实, 看哪一部异常</li>
+        </ol>
+        <strong>⑤ 填表:</strong>
+        <ol>
+          <li>将每部三候的具体脉象填入表格</li>
+          <li>口诀: <strong>先总后单, 九候方彻</strong></li>
+        </ol>
+      </div>
     </div>
 
     <div class="card">
-      <h3>腹诊操作流程 (胡老临床必做)</h3>
-      <div class="sub-label">体位</div>
-      <p style="font-size:11px;margin:3px 0">患者仰卧, 两腿伸直, 双手放松; 医生坐或立于患者右侧</p>
-      <div class="sub-label">手法</div>
-      <p style="font-size:11px;margin:3px 0">由浅入深, 由轻到重, 顺序: 心下 → 胸胁 → 脐上 → 脐周 → 少腹</p>
-      <div class="sub-label">六大腹证</div>
-      <p style="font-size:11px;margin:3px 0">① 心下痞 → 泻心/五苓; ② 胸胁苦满 → 柴胡; ③ 腹主动脉搏动 → 苓桂/桂甘; ④ 少腹不仁 → 肾气丸; ⑤ 腹皮拘急 → 建中; ⑥ 少腹硬满 → 抵当/陷胸</p>
+      <h3>腹诊操作 (胡老必做)</h3>
+      <div class="method-card">
+        <ol>
+          <li>患者<strong>仰卧</strong>, 两腿伸直</li>
+          <li>医生<strong>右侧</strong>, 由浅入深</li>
+          <li>顺序: <strong>心下 → 胸胁 → 脐上 → 脐周 → 少腹</strong></li>
+          <li>观察: 腹壁形态、张力、压痛、抵抗、搏动、振水音</li>
+          <li><strong>六大腹证</strong>:</li>
+        </ol>
+      </div>
     </div>
 
     <div class="disclaimer">
-      <strong>免责声明</strong>: 本系统仅供学习参考, 不能替代专业诊疗。<strong>急重症请立即就医</strong>。系统数据基于胡希恕著作及冯世纶教授团队整理。
+      <strong>免责声明</strong>: 本系统仅供学习参考, 不能替代专业诊疗。<strong>急重症请立即就医</strong>。
     </div>
   </div>
 
   <div class="footer">
-    胡希恕六经辨证系统 v4.0 · 数据: 314 方证 + 26 脉象 + 6 腹证 + 15 医案 · 仅供学习参考
+    胡希恕六经辨证系统 v4.1 · 314 方证 + 26 脉象 + 6 腹证 + 15 医案 · 四诊合参 · 仅供学习参考
   </div>
 </div>
 
 <script>
-/* ===== 26 种基本脉象 (胡老分类) ===== */
+/* ===== 数据 ===== */
 const PULSE_TYPES = {
-  // 太过 (阳热实)
-  '浮':  '浮取即得, 重按反减。主表、主上。',
-  '数':  '一息五至以上。主热、主阳。',
-  '实':  '举按皆有力。主邪实、正气未衰。',
-  '大':  '脉管宽大。主阳盛、邪实、病进。',
-  '滑':  '脉来流利、应指圆滑。主痰、食、孕、热。',
-  '洪':  '浮大有力,如洪水。主阳明气分热盛。',
-  // 不及 (阴寒虚)
-  '沉':  '轻取不得,重按始得。主里、主下。',
-  '迟':  '一息三至。主寒、主阴。',
-  '虚':  '举按皆无力。主气血虚。',
-  '细':  '脉管细如丝。主气血两虚、阴虚。',
-  '涩':  '脉来艰涩不畅。主血瘀、精伤。',
-  '微':  '极细极软,似有似无。主阴阳气血衰极。',
-  // 微甚脉 (程度)
-  '疾':  '数之甚者,一息七至以上。主阳极阴竭。',
-  '伏':  '沉之甚者,重按至骨始得。主邪闭、厥证、痛极。',
-  '芤':  '浮大中空,如按葱管。主失血、伤津。',
-  '革':  '浮而弦硬,中空外坚。主精血虚寒。',
-  // 兼象脉 (复合)
-  '弦':  '端直以长,如按琴弦。主肝胆病、痛、痰饮。',
-  '紧':  '脉来绷急,如切绳转索。主寒、痛、宿食。',
-  '缓':  '一息四至,从容不急。主湿、脾虚、表证。',
-  '濡':  '浮细而软。主虚证、湿证。',
-  '弱':  '沉细而软。主气血不足。',
-  '促':  '数而时一止。主阳盛实热、气血瘀滞。',
-  '结':  '缓而时一止。主阴盛气结。',
-  '代':  '止有定数。主脏气衰微。',
-  '动':  '脉形如豆,厥厥动摇。主痛、惊。',
-  '短':  '首尾俱短,不满本部。主气虚、气郁。'
+  '浮':'浮取即得,重按反减。主表、主上。',
+  '数':'一息五至以上。主热、主阳。',
+  '实':'举按皆有力。主邪实、正气未衰。',
+  '大':'脉管宽大。主阳盛、邪实、病进。',
+  '滑':'脉来流利、应指圆滑。主痰、食、孕、热。',
+  '洪':'浮大有力,如洪水。主阳明气分热盛。',
+  '沉':'轻取不得,重按始得。主里、主下。',
+  '迟':'一息三至。主寒、主阴。',
+  '虚':'举按皆无力。主气血虚。',
+  '细':'脉管细如丝。主气血两虚、阴虚。',
+  '涩':'脉来艰涩不畅。主血瘀、精伤。',
+  '微':'极细极软,似有似无。主阴阳气血衰极。',
+  '疾':'数之甚者,一息七至以上。主阳极阴竭。',
+  '伏':'沉之甚者,重按至骨始得。主邪闭、厥证、痛极。',
+  '芤':'浮大中空,如按葱管。主失血、伤津。',
+  '革':'浮而弦硬,中空外坚。主精血虚寒。',
+  '弦':'端直以长,如按琴弦。主肝胆病、痛、痰饮。',
+  '紧':'脉来绷急,如切绳转索。主寒、痛、宿食。',
+  '缓':'一息四至,从容不急。主湿、脾虚、表证。',
+  '濡':'浮细而软。主虚证、湿证。',
+  '弱':'沉细而软。主气血不足。',
+  '促':'数而时一止。主阳盛实热、气血瘀滞。',
+  '结':'缓而时一止。主阴盛气结。',
+  '代':'止有定数。主脏气衰微。',
+  '动':'脉形如豆,厥厥动摇。主痛、惊。',
+  '短':'首尾俱短,不满本部。主气虚、气郁。'
 };
 
-/* ===== 26 脉分类 ===== */
 const PULSE_TG = ['浮','数','实','大','滑','洪'];
 const PULSE_BJ = ['沉','迟','虚','细','涩','微'];
 const PULSE_WS = ['疾','伏','芤','革'];
 const PULSE_JX = ['弦','紧','缓','濡','弱','促','结','代','动','短'];
 
-/* ===== 部位症状 chip ===== */
+/* ===== 四诊 chip 数据 ===== */
 const CHIPS = {
-  coldheat: ['发热','恶寒','恶风','寒热往来','身热不扬','但热不寒','往来寒热','定时发热','日晡所剧','身灼热','潮热','身热','低热'],
-  sweat: ['无汗','汗出','自汗','盗汗','汗出不止','头汗','手足汗出','微汗','大汗'],
-  head: ['头痛','头项强痛','项背强几几','头眩','头重','偏头痛','眉棱骨痛','面赤','面色苍白','面晦暗','面黧黑'],
-  chest: ['胸闷','胸痛','胸胁苦满','心下痞','心下硬满','心下悸','心烦','心悸','心下支结','胁痛','咳嗽','喘','气短','胸中窒','心下急'],
-  bowel: ['便秘','下利','大便硬','大便溏','小便不利','小便数','小便清长','小便黄','小便赤涩','腹满','腹痛','绕脐痛','少腹硬满','小腹急结'],
-  mind: ['不欲食','纳差','恶心','呕吐','干呕','烦渴','口苦','咽干','心烦喜呕','默默不欲饮食','但欲寐','精神不振','神昏','谵语','烦躁','心烦不得眠','嗜睡','口渴','不渴','喜冷饮','喜热饮']
+  'look-face':['面赤','面苍白','面晦暗','面黧黑','面色潮红','面色淡白','颧红','面青'],
+  'look-body':['形体肥胖','形体消瘦','精神不振','神昏','嗜睡','但欲寐','烦躁','蜷卧','喜温','喜冷','蜷缩','躁动','衣被不敛'],
+  'look-tongue':['舌淡','舌淡红','舌红','舌绛','舌紫暗','舌胖','舌瘦','齿痕舌','舌有瘀点','舌下络脉曲张'],
+  'look-coating':['苔薄白','苔白','苔白厚','苔白腻','苔黄','苔黄腻','苔黄燥','苔灰黑','苔少','无苔','剥苔','苔润滑','苔干燥'],
+  'hear-voice':['语声高亢','语声低微','语声重浊','嘶哑','失音','郑声','谵语','独语','语言謇涩'],
+  'hear-smell':['口气臭秽','痰腥臭','呕吐酸腐','大便酸臭','痰涎清稀','痰黄稠','咯脓血腥臭'],
+  'hear-cough':['咳嗽','干咳','咳喘','咳痰','咽痒','咽痛','咽红','扁桃体肿大','呼吸急促','痰鸣','喉中水鸡声','犬吠样咳'],
+  'ask-coldheat':['发热','恶寒','恶风','寒热往来','身热不扬','但热不寒','定时发热','日晡所剧','身灼热','潮热','低热','无热恶寒','微热','烦热'],
+  'ask-sweat':['无汗','汗出','自汗','盗汗','汗出不止','头汗','手足汗出','微汗','大汗','汗出恶风','汗出而喘','但头汗出','漏汗'],
+  'ask-head':['头痛','头项强痛','项背强几几','头眩','头重','偏头痛','眉棱骨痛','头晕','耳鸣','耳聋','目眩','目赤','视物模糊','口眼歪斜'],
+  'ask-chest':['胸闷','胸痛','胸胁苦满','心下痞','心下硬满','心下悸','心烦','心悸','心下支结','胁痛','咳嗽','喘','气短','胸中窒','心下急','心下压痛','胸胁满闷'],
+  'ask-bowel':['便秘','下利','大便硬','大便溏','小便不利','小便数','小便清长','小便黄','小便赤涩','腹满','腹痛','绕脐痛','少腹硬满','小腹急结','里急后重','大便不通','自利清水','完谷不化','下利清谷','下利脓血'],
+  'ask-mind':['不欲食','纳差','恶心','呕吐','干呕','烦渴','口苦','咽干','心烦喜呕','默默不欲饮食','口渴','不渴','喜冷饮','喜热饮','消渴','饥不欲食','食入即吐','嗳腐吞酸','嘈杂'],
+  'ask-sleep':['失眠','不得眠','嗜睡','多梦','心烦不得卧','虚烦不得眠','睡中易惊']
 };
 
-/* ===== 腹证 chip ===== */
 const ABDOMEN_CHIPS = [
   '心下痞','心下痞硬','心下硬满','心下急','心下支结','心下悸',
   '胸胁苦满','胁下痞硬','胁下硬满','胁痛',
@@ -461,36 +492,37 @@ const ABDOMEN_CHIPS = [
   '心下压痛','拒按','喜按'
 ];
 
-/* ===== 医案 (胡老亲讲 15 则) ===== */
 const CASES = [
-  {name:'麻黄汤案 - 打球后冲凉',main:'陈某,男,24岁,1965-10-9 昨天打篮球后用凉水洗澡,今早恶寒身热 T38.6℃,无汗,头痛,身酸痛,口不渴',tongue:'苔薄白',pulse:'脉浮紧',rx:'麻黄三钱 桂枝二钱 炙甘草二钱 杏仁三钱',result:'微汗出,热渐退,两天自愈',quote:'本例非常典型的太阳表实证'},
+  {name:'麻黄汤案 - 打球后冲凉',main:'陈某,男,24岁,1965-10-9 昨天打篮球后用凉水洗澡,今早恶寒身热 T38.6℃,无汗,头痛,身酸痛,口不渴',tongue:'苔薄白',pulse:'脉浮紧',rx:'麻黄三钱 桂枝二钱 炙甘草二钱 杏仁三钱',result:'微汗出,热渐退,两天自愈',quote:'非常典型的太阳表实证'},
   {name:'小柴胡加石膏桔梗案 - 感冒咽痛',main:'唐某,男,35岁,1965-4-24 感冒三天,咽痛,口干,恶心,不欲食,头痛头晕,咳则右上胸疼',tongue:'苔白',pulse:'脉弦细数',rx:'柴胡12g 半夏9g 黄芩9g 党参9g 生姜9g 大枣4枚 炙甘草6g 苦桔梗9g 生石膏45g',result:'三剂症减,后合桂枝龙牡收功',quote:'少阳阳明合病,小柴胡加石膏桔梗汤方证'},
-  {name:'柴胡桂枝合半夏厚朴案 - 三阳合病',main:'张某,女,27岁,1965-9-24 感冒一月,头晕,头痛,背痛,恶寒,咽痒而咳,咯痰困难晚上尤甚,口苦咽干',tongue:'苔薄白',pulse:'脉弦细数',rx:'柴胡12g 党参9g 半夏12g 黄芩9g 桂枝9g 白芍9g 厚朴9g 苏子6g 苏叶6g 生姜9g 大枣4枚 茯苓9g 炙甘草6g 生石膏45g',result:'三剂诸症显解,后予桂苓五味姜辛夏杏甘草汤收功',quote:'胡老辨为三阳合病,处方柴胡桂枝汤合半夏厚朴汤加石膏'},
+  {name:'柴胡桂枝合半夏厚朴案 - 三阳合病',main:'张某,女,27岁,1965-9-24 感冒一月,头晕,头痛,背痛,恶寒,咽痒而咳,咯痰困难晚上尤甚,口苦咽干',tongue:'苔薄白',pulse:'脉弦细数',rx:'柴胡12g 党参9g 半夏12g 黄芩9g 桂枝9g 白芍9g 厚朴9g 苏子6g 苏叶6g 生姜9g 大枣4枚 茯苓9g 炙甘草6g 生石膏45g',result:'三剂诸症显解,后予桂苓五味姜辛夏杏甘草汤收功',quote:'胡老辨为三阳合病'},
   {name:'麻黄附子甘草汤案 - 少阴表证',main:'许某,男,47岁,1978-5-4 感冒两天,右头痛,自觉无精神,两手逆冷,无汗恶寒,口中和不思饮',tongue:'舌质淡,舌苔薄白',pulse:'脉沉细',rx:'麻黄9g 制附子9g 炙甘草6g 川芎9g',result:'虚寒表证,温阳解表',quote:'少阴病三个突出特征:无热恶寒、脉微细、精神不振'},
-  {name:'桂枝汤案 - 定时发热',main:'贺某,男,8岁,1965-10-23 感冒发热一周,每日上午11点半发热 T38℃,汗出,至夜12点烧自退',tongue:'苔白润',pulse:'脉虚数',rx:'桂枝9g 白芍9g 生姜9g 大枣4枚 炙甘草6g',result:'二剂上午无热,下午低热37.2-37.5℃,合小柴胡加石膏三剂愈',quote:'定时发热为营卫失和,先其时发汗则愈'},
-  {name:'小柴胡加石膏治噤口痢',main:'前门外观音寺胡同口天得和利布店商人姓周,得噤口痢,发高热,吃东西就吐,下利如注如红血汤(赤痢),频繁如厕,小便可但特别黄。吃点西瓜才觉得好,里热太重,腹诊稀软无胃家实',tongue:'(未记)',pulse:'(未记)',rx:'小柴胡汤加石膏,连吃七剂',result:'一味药未增减就好了',quote:'痢疾不能下,禁用大黄。这种痢疾多现此方证'},
-  {name:'白虎加人参汤误治致死',main:'山东姓马妇女,糖尿病用白虎增液汤加参控制住,后感冒,反复发汗一月余,骨瘦如柴',tongue:'(未记)',pulse:'脉浮而无力,虚数无度',rx:'大剂量白虎加人参汤 (但已难救)',result:'最终死亡,治死的案例',quote:'流感一开始就用小柴胡汤加石膏效果非常好,就不会有这种情形。一发汗体温散一散,过后还发热,就要仔细辨证'},
-  {name:'大承气汤治痢疾 - 腹诊决定',main:'陈慎吾之母,70 多岁,痢疾一两个月,神昏谵语,舌苔非常黄干',tongue:'苔黄干',pulse:'脉偏迟',rx:'大承气汤 (频服)',result:'吃完全剂才泻,泻出干大便,泻完即愈',quote:'心下痞硬有实有虚,真正的实证用大承气汤。后世注家说承气汤泻腑不泻心下,这是错误的'},
-  {name:'大柴胡合桂枝茯苓丸治热入血室',main:'徐又忱之妻徐秀珍,感冒时来例假,热入血室,病重不认识人,叫她丈夫都叫小鬼,病了十多天起不来',tongue:'(未记)',pulse:'脉快得很,多少有点浮',rx:'大柴胡汤合桂枝茯苓丸加石膏',result:'吃完即好',quote:'精神病的患者很多属于血瘀证,尝以本方(桃核承气汤)或桂枝茯苓丸合用大柴胡汤治愈多矣'},
+  {name:'桂枝汤案 - 定时发热',main:'贺某,男,8岁,1965-10-23 感冒发热一周,每日上午11点半发热 T38℃,汗出,至夜12点烧自退',tongue:'苔白润',pulse:'脉虚数',rx:'桂枝9g 白芍9g 生姜9g 大枣4枚 炙甘草6g',result:'二剂上午无热,下午低热,合小柴胡加石膏三剂愈',quote:'定时发热为营卫失和,先其时发汗则愈'},
+  {name:'小柴胡加石膏治噤口痢',main:'前门天得和利布店商人姓周,得噤口痢,发高热,吃东西就吐,下利如注如红血汤(赤痢),频繁如厕,小便可但特别黄。吃点西瓜才觉得好,里热太重,腹诊稀软无胃家实',tongue:'(未记)',pulse:'(未记)',rx:'小柴胡汤加石膏,连吃七剂',result:'一味药未增减就好了',quote:'痢疾不能下,禁用大黄'},
+  {name:'白虎加人参汤误治致死',main:'山东姓马妇女,糖尿病用白虎增液汤加参控制住,后感冒,反复发汗一月余,骨瘦如柴',tongue:'(未记)',pulse:'脉浮而无力,虚数无度',rx:'大剂量白虎加人参汤 (但已难救)',result:'最终死亡,治死的案例',quote:'流感一开始就用小柴胡汤加石膏效果非常好'},
+  {name:'大承气汤治痢疾 - 腹诊决定',main:'陈慎吾之母,70多岁,痢疾一两个月,神昏谵语,舌苔非常黄干',tongue:'苔黄干',pulse:'脉偏迟',rx:'大承气汤 (频服)',result:'吃完全剂才泻,泻出干大便,泻完即愈',quote:'心下痞硬有实有虚,真正的实证用大承气汤'},
+  {name:'大柴胡合桂枝茯苓丸治热入血室',main:'徐又忱之妻徐秀珍,感冒时来例假,热入血室,病重不认识人',tongue:'(未记)',pulse:'脉快得很,多少有点浮',rx:'大柴胡汤合桂枝茯苓丸加石膏',result:'吃完即好',quote:'精神病的患者很多属于血瘀证'},
   {name:'大柴胡加石膏治高热 50 天',main:'老先生 50 多天高热 40℃ 上下,北京各大医院治疗无效,曾怀疑癌,后切片不是癌,只是淋巴结',tongue:'舌苔绝对黄',pulse:'脉浮数',rx:'大柴胡汤加石膏',result:'一剂热退,三剂出院,至今活着',quote:'虽脉浮数者,可下之,此浮脉不主表乃主热也'},
-  {name:'小柴胡加石膏治头痛如裂',main:'胡老亲戚,30 多岁工程师,平时不信中医,协和住院,感冒发热吃西药热轻但头痛如裂,要抽骨髓他不干了,来找我',tongue:'(未记)',pulse:'脉弦数',rx:'小柴胡汤加石膏',result:'吃完药好了,后来有病也找我了,信中医了',quote:'柴胡证的头痛是挺常见的,各种各样,但是必有发热,或是有热象才能用'},
-  {name:'大承气汤治自身瘟疫',main:'胡老自身 40 年前得此病,睡觉中感觉眩晕,身体如悬起来,醒来肚子疼,排泄"自利清水色纯清",气味难闻,人事不知',tongue:'(未记)',pulse:'(未记 - 脉不是那么急躁)',rx:'大承气汤合调胃承气汤',result:'一剂愈',quote:'古人管这种病叫瘟疫,与少阴病无关,病情反应像少阴病,按现在的说法我当时就是休克了'},
-  {name:'白矾汤治霍乱',main:'日伪时期在沈阳,朋友马大夫得霍乱,一两点钟,外面买药来不及',tongue:'(未记)',pulse:'(未记)',rx:'白矾一大块,沏一大碗浓浓的汤',result:'喝完即好',quote:'白矾起收敛固脱作用,味是又苦又酸,可是有这个病的人喝下去反倒不觉得那么酸苦'},
+  {name:'小柴胡加石膏治头痛如裂',main:'胡老亲戚,30多岁工程师,平时不信中医,协和住院,感冒发热吃西药热轻但头痛如裂',tongue:'(未记)',pulse:'脉弦数',rx:'小柴胡汤加石膏',result:'吃完药好了,后来有病也找我了',quote:'柴胡证的头痛是挺常见的,各种各样'},
+  {name:'大承气汤治自身瘟疫',main:'胡老自身 40 年前得此病,睡觉中感觉眩晕,身体如悬起来,醒来肚子疼,排泄"自利清水色纯清",气味难闻,人事不知',tongue:'(未记)',pulse:'(未记)',rx:'大承气汤合调胃承气汤',result:'一剂愈',quote:'古人管这种病叫瘟疫,与少阴病无关'},
+  {name:'白矾汤治霍乱',main:'日伪时期在沈阳,朋友马大夫得霍乱,一两点钟,外面买药来不及',tongue:'(未记)',pulse:'(未记)',rx:'白矾一大块,沏一大碗浓浓的汤',result:'喝完即好',quote:'白矾起收敛固脱作用'},
   {name:'越婢汤治眼睑肿',main:'门诊小姑娘,眼睑肿',tongue:'(未记)',pulse:'(未记)',rx:'越婢汤',result:'愈,现在还挺好',quote:'腰以上肿,当发汗乃愈'},
-  {name:'小柴胡加石膏治小儿重症肺炎',main:'空军总医院七八岁小孩,眼不睁口不开,昏迷四天,人事不省,滴水不入,像死孩子一样,前医用麻杏石甘汤越吃越热',tongue:'(未记)',pulse:'(未记)',rx:'小柴胡汤加石膏四两 (一宿频服一剂)',result:'逐渐好起来,未改方一直治疗到出院,好得挺快',quote:'肺炎汗出而喘,若有柴胡证,不可与麻杏石甘汤,宜小柴胡加石膏,尤其小儿肺炎更多本方证'}
+  {name:'小柴胡加石膏治小儿重症肺炎',main:'空军总医院七八岁小孩,眼不睁口不开,昏迷四天,人事不省,滴水不入',tongue:'(未记)',pulse:'(未记)',rx:'小柴胡汤加石膏四两 (一宿频服一剂)',result:'逐渐好起来,未改方一直治疗到出院',quote:'肺炎汗出而喘,若有柴胡证,不可与麻杏石甘汤'}
 ];
 
-/* ===== 全局状态 ===== */
+/* ===== 状态 ===== */
 let FORMULAS = [];
-let SELECTED_SYMPTOMS = new Set();
-let SELECTED_PULSE_TG = new Set();
-let SELECTED_PULSE_BJ = new Set();
-let SELECTED_PULSE = new Set();
-let SELECTED_ABDOMEN = new Set();
-let SELECTED_ABDOMEN_ZONES = new Set();
+let SELECTED = {
+  look_face: new Set(), look_body: new Set(), look_tongue: new Set(), look_coating: new Set(),
+  hear_voice: new Set(), hear_smell: new Set(), hear_cough: new Set(),
+  ask_coldheat: new Set(), ask_sweat: new Set(), ask_head: new Set(), ask_chest: new Set(),
+  ask_bowel: new Set(), ask_mind: new Set(), ask_sleep: new Set(),
+  pulse: new Set(), abdomen: new Set(), abdomen_zone: new Set()
+};
 let CURRENT_HAND = 'L';
-let CURRENT_PULSE_CELL = null;
+let CURRENT_CELL = null;
 let CURRENT_MERIDIAN = 'all';
+let CURRENT_STEP = 1;
 
 /* ===== 初始化 ===== */
 fetch('data/formulas.json').then(r => r.json()).then(d => {
@@ -508,22 +540,26 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById(t.dataset.tab).classList.add('active');
     });
   });
+
   // chips
   for (const [k, v] of Object.entries(CHIPS)) {
-    const c = document.getElementById('chips-' + k);
-    if (c) v.forEach(s => {
+    const c = document.getElementById(k);
+    if (!c) continue;
+    const targetKey = k.replace('-', '_');
+    v.forEach(s => {
       const span = document.createElement('span');
-      span.className = 'chip';
+      span.className = 'chip ' + k.split('-')[0];
       span.textContent = s;
       span.onclick = () => {
         span.classList.toggle('selected');
-        if (SELECTED_SYMPTOMS.has(s)) SELECTED_SYMPTOMS.delete(s);
-        else SELECTED_SYMPTOMS.add(s);
+        if (SELECTED[targetKey].has(s)) SELECTED[targetKey].delete(s);
+        else SELECTED[targetKey].add(s);
       };
       c.appendChild(span);
     });
   }
-  // 脉象 chips
+
+  // 脉象分类
   const renderPulseChips = (arr, target) => {
     const c = document.getElementById('chips-pulse-' + target);
     arr.forEach(p => {
@@ -533,8 +569,8 @@ document.addEventListener('DOMContentLoaded', () => {
       span.title = PULSE_TYPES[p] || '';
       span.onclick = () => {
         span.classList.toggle('selected');
-        if (SELECTED_PULSE.has(p)) SELECTED_PULSE.delete(p);
-        else SELECTED_PULSE.add(p);
+        if (SELECTED.pulse.has(p)) SELECTED.pulse.delete(p);
+        else SELECTED.pulse.add(p);
       };
       c.appendChild(span);
     });
@@ -552,8 +588,8 @@ document.addEventListener('DOMContentLoaded', () => {
     span.textContent = a;
     span.onclick = () => {
       span.classList.toggle('selected');
-      if (SELECTED_ABDOMEN.has(a)) SELECTED_ABDOMEN.delete(a);
-      else SELECTED_ABDOMEN.add(a);
+      if (SELECTED.abdomen.has(a)) SELECTED.abdomen.delete(a);
+      else SELECTED.abdomen.add(a);
     };
     ac.appendChild(span);
   });
@@ -566,11 +602,13 @@ document.addEventListener('DOMContentLoaded', () => {
     span.textContent = p;
     span.title = PULSE_TYPES[p];
     span.onclick = () => {
-      if (CURRENT_PULSE_CELL) {
-        CURRENT_PULSE_CELL.textContent = p;
-        CURRENT_PULSE_CELL.classList.add('selected');
-        CURRENT_PULSE_CELL.dataset.pulse = p;
-        CURRENT_PULSE_CELL = null;
+      if (CURRENT_CELL) {
+        CURRENT_CELL.textContent = p;
+        CURRENT_CELL.classList.remove('active');
+        CURRENT_CELL.classList.add('filled');
+        CURRENT_CELL.dataset.pulse = p;
+        document.getElementById('pulse_picker_wrap').style.display = 'none';
+        CURRENT_CELL = null;
       }
     };
     pp.appendChild(span);
@@ -582,129 +620,230 @@ document.addEventListener('DOMContentLoaded', () => {
   // 搜索
   document.getElementById('search_formula').addEventListener('input', renderFormulaList);
   document.getElementById('search_case').addEventListener('input', renderCases);
-  document.getElementById('search_formula').addEventListener('input', (e) => {
-    document.getElementById('clear_search').style.display = e.target.value ? 'block' : 'none';
+
+  // 脉诊 step 引导
+  document.querySelectorAll('.step').forEach(s => {
+    s.onclick = () => goStep(parseInt(s.dataset.step));
   });
+
+  goStep(1);
 });
 
-function switchPulse(hand, btn) {
-  CURRENT_HAND = hand === 'left' ? 'L' : 'R';
-  btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const cap = document.querySelector('#pulse_table caption');
-  if (hand === 'left') cap.textContent = '左手 - 寸(心) 关(肝) 尺(肾)';
-  else cap.textContent = '右手 - 寸(肺) 关(脾) 尺(命门)';
-  document.querySelectorAll('#pulse_table td').forEach(td => {
-    if (td.dataset.hand) td.dataset.hand = CURRENT_HAND;
+function goStep(n) {
+  CURRENT_STEP = n;
+  document.querySelectorAll('.step').forEach((s, i) => {
+    s.classList.remove('active', 'done');
+    if (i + 1 === n) s.classList.add('active');
+    else if (i + 1 < n) s.classList.add('done');
   });
+
+  const content = document.getElementById('step_content');
+  const formCard = document.getElementById('pulse_form_card');
+
+  if (n < 5) {
+    formCard.style.display = 'none';
+    const steps = [
+      `<div class="method-card">
+        <strong>① 准备体位</strong>
+        <ol>
+          <li>患者<strong>坐位或仰卧</strong>, 手臂自然舒展放平, 掌心向上</li>
+          <li>肘部与心脏保持同一水平, 腕下可垫脉枕</li>
+          <li>安静环境, 避开剧烈运动、饮酒、餐后</li>
+          <li>医生呼吸平稳, 宁神静气, 手暖</li>
+        </ol>
+        <button class="primary" onclick="goStep(2)">下一步: 布指 →</button>
+      </div>`,
+      `<div class="method-card">
+        <strong>② 布指定位</strong>
+        <ol>
+          <li><strong>中指</strong>按高骨(桡骨茎突)内侧 = <strong>关脉</strong></li>
+          <li><strong>食指</strong>(关前腕侧) = <strong>寸脉</strong></li>
+          <li><strong>无名指</strong>(关后肘侧) = <strong>尺脉</strong></li>
+          <li>三指呈<strong>弓形</strong>, 指腹(螺纹面)着脉, 平齐</li>
+          <li>指距: 臂长疏、臂短密, 小儿<strong>一指定三关</strong></li>
+        </ol>
+        <button class="secondary" onclick="goStep(1)">← 上一步</button>
+        <button class="primary" onclick="goStep(3)">下一步: 总按 →</button>
+      </div>`,
+      `<div class="method-card">
+        <strong>③ 总按 (先看整体) - <span style="color:var(--danger)">关键步骤</span></strong>
+        <ol>
+          <li>三指<strong>同时</strong>按三部 (寸关尺)</li>
+          <li>先<strong>浮取</strong>(轻) → 中取(不轻不重) → 沉取(重)</li>
+          <li>看三部脉象是否<strong>均匀、协调</strong>, 把握整体气血</li>
+          <li>确定整体脉象: 浮? 沉? 迟? 数? 弦? 弱?</li>
+        </ol>
+        <p style="color:var(--primary);font-size:11px;margin-top:4px">⚠️ 胡老强调: <strong>先总按看大势</strong>, 不要一开始就分部</p>
+        <button class="secondary" onclick="goStep(2)">← 上一步</button>
+        <button class="primary" onclick="goStep(4)">下一步: 分部 →</button>
+      </div>`,
+      `<div class="method-card">
+        <strong>④ 分部 (再看细节)</strong>
+        <ol>
+          <li>分别单独按每一部: 寸 → 关 → 尺</li>
+          <li>每部都做<strong>浮中沉</strong>三候 (九候)</li>
+          <li>细察<strong>某一脏腑</strong>的虚实, 看哪一部异常</li>
+          <li>口诀: <strong>先总后单, 九候方彻</strong></li>
+        </ol>
+        <p style="color:var(--primary);font-size:11px;margin-top:4px">左手: 寸(心) 关(肝) 尺(肾) | 右手: 寸(肺) 关(脾) 尺(命门)</p>
+        <button class="secondary" onclick="goStep(3)">← 上一步</button>
+        <button class="primary" onclick="goStep(5)">下一步: 填表 →</button>
+      </div>`
+    ];
+    content.innerHTML = steps[n - 1];
+  } else {
+    formCard.style.display = 'block';
+    content.innerHTML = `<div class="method-card">
+      <strong>⑤ 填表</strong>
+      <p style="font-size:11px;margin:4px 0">点击下方表格的格子 → 选择脉象 → 自动填入</p>
+      <button class="secondary" onclick="goStep(4)">← 上一步</button>
+    </div>`;
+  }
 }
 
-function toggleCell(td) {
-  document.querySelectorAll('#pulse_table td').forEach(t => t.classList.remove('selected'));
-  CURRENT_PULSE_CELL = td;
-  td.classList.add('selected');
+function switchHand(h, btn) {
+  CURRENT_HAND = h;
+  document.querySelectorAll('.hand-btn').forEach(b => {
+    b.style.background = '#fff';
+    b.style.color = 'var(--cut)';
+    b.style.border = '1px solid var(--cut)';
+  });
+  btn.style.background = 'var(--cut)';
+  btn.style.color = '#fff';
+  btn.style.border = 'none';
+  const cap = document.getElementById('pulse_caption');
+  if (h === 'L') cap.textContent = '左手 - 寸(心) 关(肝) 尺(肾)';
+  else cap.textContent = '右手 - 寸(肺) 关(脾) 尺(命门)';
+  document.querySelectorAll('#pulse_table td[data-h]').forEach(td => td.dataset.h = h);
+}
+
+function pickCell(td) {
+  document.querySelectorAll('#pulse_table td').forEach(t => t.classList.remove('active'));
+  td.classList.add('active');
+  CURRENT_CELL = td;
+  document.getElementById('pulse_picker_wrap').style.display = 'block';
+}
+
+function cancelPick() {
+  if (CURRENT_CELL) CURRENT_CELL.classList.remove('active');
+  CURRENT_CELL = null;
+  document.getElementById('pulse_picker_wrap').style.display = 'none';
 }
 
 function toggleZone(el, name) {
   el.classList.toggle('selected');
-  if (SELECTED_ABDOMEN_ZONES.has(name)) SELECTED_ABDOMEN_ZONES.delete(name);
-  else SELECTED_ABDOMEN_ZONES.add(name);
+  if (SELECTED.abdomen_zone.has(name)) SELECTED.abdomen_zone.delete(name);
+  else SELECTED.abdomen_zone.add(name);
+  if (el.classList.contains('selected')) {
+    el.style.background = 'var(--abdomen)';
+    el.style.color = '#fff';
+    el.style.borderColor = 'var(--abdomen)';
+  } else {
+    el.style.background = '#fff';
+    el.style.color = '';
+    el.style.borderColor = 'var(--border)';
+  }
 }
 
 function clearPulse() {
-  document.querySelectorAll('#pulse_table td').forEach(td => {
-    if (td.dataset.hand) {
-      td.textContent = '';
-      td.classList.remove('selected');
-      delete td.dataset.pulse;
-    }
+  document.querySelectorAll('#pulse_table td[data-h]').forEach(td => {
+    td.textContent = '';
+    td.classList.remove('active', 'filled');
+    delete td.dataset.pulse;
   });
-  document.querySelectorAll('#chips-pulse-tg .chip, #chips-pulse-bj .chip, #chips-pulse-ws .chip, #chips-pulse-jx .chip')
-    .forEach(c => c.classList.remove('selected'));
-  SELECTED_PULSE.clear();
+  document.querySelectorAll('.chip.pulse').forEach(c => c.classList.remove('selected'));
+  SELECTED.pulse.clear();
   document.getElementById('pulse_summary').innerHTML = '';
+  document.getElementById('pulse_picker_wrap').style.display = 'none';
 }
 
 function clearAbdomen() {
-  document.querySelectorAll('.abdomen-zone').forEach(z => z.classList.remove('selected'));
+  document.querySelectorAll('.abdomen-zone').forEach(z => {
+    z.classList.remove('selected');
+    z.style.background = '#fff';
+    z.style.color = '';
+    z.style.borderColor = 'var(--border)';
+  });
   document.querySelectorAll('#chips-abdomen .chip').forEach(c => c.classList.remove('selected'));
-  SELECTED_ABDOMEN.clear();
-  SELECTED_ABDOMEN_ZONES.clear();
+  SELECTED.abdomen.clear();
+  SELECTED.abdomen_zone.clear();
   document.getElementById('abdomen_summary').innerHTML = '';
 }
 
 function savePulse() {
   const cells = [];
-  document.querySelectorAll('#pulse_table td[data-hand]').forEach(td => {
+  document.querySelectorAll('#pulse_table td[data-h]').forEach(td => {
     if (td.dataset.pulse) {
-      cells.push((td.dataset.hand === 'L' ? '左' : '右') + td.dataset.pos + td.dataset.depth + ':' + td.dataset.pulse);
-      // 把脉象也加入 SELECTED_PULSE
-      SELECTED_PULSE.add(td.dataset.pulse);
+      const h = td.dataset.h === 'L' ? '左' : '右';
+      cells.push(h + td.dataset.p + '·' + td.dataset.d + ':' + td.dataset.pulse);
+      SELECTED.pulse.add(td.dataset.pulse);
     }
   });
-  // 同步 chip 状态
-  document.querySelectorAll('#chips-pulse-tg .chip, #chips-pulse-bj .chip, #chips-pulse-ws .chip, #chips-pulse-jx .chip')
-    .forEach(c => {
-      if (SELECTED_PULSE.has(c.textContent)) c.classList.add('selected');
-      else c.classList.remove('selected');
-    });
+  document.querySelectorAll('.chip.pulse').forEach(c => {
+    if (SELECTED.pulse.has(c.textContent)) c.classList.add('selected');
+    else c.classList.remove('selected');
+  });
   let html = '<strong>已填脉诊:</strong><br>';
-  html += cells.length ? cells.join(' / ') : '(无)';
-  if (SELECTED_PULSE.size) {
-    html += '<br><strong>脉象速选:</strong> ' + [...SELECTED_PULSE].join('、');
+  html += cells.length ? cells.join(' | ') : '(无)';
+  if (SELECTED.pulse.size) {
+    html += '<br><strong>脉象速选:</strong> ' + [...SELECTED.pulse].join('、');
   }
   document.getElementById('pulse_summary').innerHTML = html;
 }
 
 function saveAbdomen() {
   let html = '<strong>已填腹诊:</strong><br>';
-  html += '九区: ' + (SELECTED_ABDOMEN_ZONES.size ? [...SELECTED_ABDOMEN_ZONES].join('、') : '(无)');
-  html += '<br>腹证: ' + (SELECTED_ABDOMEN.size ? [...SELECTED_ABDOMEN].join('、') : '(无)');
+  html += '九区: ' + (SELECTED.abdomen_zone.size ? [...SELECTED.abdomen_zone].join('、') : '(无)');
+  html += '<br>腹证: ' + (SELECTED.abdomen.size ? [...SELECTED.abdomen].join('、') : '(无)');
   document.getElementById('abdomen_summary').innerHTML = html;
 }
 
 function clearAll() {
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
-  SELECTED_SYMPTOMS.clear();
-  SELECTED_PULSE.clear();
-  SELECTED_ABDOMEN.clear();
-  SELECTED_ABDOMEN_ZONES.clear();
+  for (const k in SELECTED) SELECTED[k].clear();
   clearPulse();
   clearAbdomen();
   document.querySelectorAll('textarea').forEach(t => t.value = '');
   document.getElementById('result_card').style.display = 'none';
+  // 重置九区颜色
+  document.querySelectorAll('.abdomen-zone').forEach(z => {
+    z.style.background = '#fff';
+    z.style.color = '';
+    z.style.borderColor = 'var(--border)';
+  });
 }
 
 /* ===== 辨证引擎 ===== */
 function runDiagnose() {
-  // 收集所有输入
   const text = [
-    document.getElementById('chief_complaint').value,
-    document.getElementById('observation').value,
-    document.getElementById('hearing').value,
-    document.getElementById('inquiry').value,
-    document.getElementById('pulldiag_short').value,
-    ...SELECTED_SYMPTOMS,
-    ...SELECTED_PULSE,
-    ...SELECTED_ABDOMEN,
-    ...SELECTED_ABDOMEN_ZONES
+    document.getElementById('look_note').value,
+    document.getElementById('hear_note').value,
+    document.getElementById('ask_note').value,
+    document.getElementById('cut_short').value,
+    ...SELECTED.look_face, ...SELECTED.look_body, ...SELECTED.look_tongue, ...SELECTED.look_coating,
+    ...SELECTED.hear_voice, ...SELECTED.hear_smell, ...SELECTED.hear_cough,
+    ...SELECTED.ask_coldheat, ...SELECTED.ask_sweat, ...SELECTED.ask_head, ...SELECTED.ask_chest,
+    ...SELECTED.ask_bowel, ...SELECTED.ask_mind, ...SELECTED.ask_sleep,
+    ...SELECTED.pulse, ...SELECTED.abdomen, ...SELECTED.abdomen_zone
   ].join(' ').toLowerCase();
 
-  // 八纲分析
+  const crit = checkCritical(text);
   const sixMeridian = locateMeridian(text);
 
-  // 危证检查
-  const crit = checkCritical(text);
-  if (crit) {
-    document.getElementById('result_card').style.display = 'block';
-    let ch = '<div class="critical-alert"><h3>⚠️ ' + crit.title + '</h3><p>' + crit.text + '</p></div>';
-    document.getElementById('six_meridian_result').innerHTML = ch;
-  } else {
-    document.getElementById('result_card').style.display = 'block';
-    document.getElementById('six_meridian_result').innerHTML = '<p style="font-size:12px"><strong>六经定位:</strong> ' + sixMeridian + '</p>';
-  }
+  document.getElementById('result_card').style.display = 'block';
+  // 切换到辨证 tab
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+  document.querySelector('.tab[data-tab="t4"]').classList.add('active');
+  document.getElementById('t4').classList.add('active');
 
-  // 匹配方证
+  let smr = '';
+  if (crit) {
+    smr += '<div class="critical-alert"><h3>⚠️ ' + crit.title + '</h3><p>' + crit.text + '</p></div>';
+  }
+  smr += '<p style="font-size:12px;margin:4px 0"><strong>六经定位:</strong> ' + sixMeridian + '</p>';
+  document.getElementById('six_meridian_result').innerHTML = smr;
+
   const results = FORMULAS.map(f => {
     const score = scoreFormula(f, text);
     return { f, score: score.total, detail: score };
@@ -738,27 +877,22 @@ function locateMeridian(text) {
 }
 
 function checkCritical(text) {
-  // 少阴危证
   if ((text.includes('四肢厥冷') || text.includes('手足厥冷')) &&
       (text.includes('脉微细') || text.includes('脉微') || text.includes('脉微欲绝')) &&
       (text.includes('下利清谷') || text.includes('但欲寐') || text.includes('精神不振'))) {
     return { title: '少阴危证 (四逆 + 脉微细)', text: '阳虚欲脱, 急用四逆汤 → 脉微欲绝转通脉四逆汤' };
   }
-  // 厥阴危证
   if (text.includes('消渴') && text.includes('气上撞心') && text.includes('饥而不欲食')) {
     return { title: '厥阴危证 (寒热错杂)', text: '乌梅丸主之, 寒热并用, 需久服' };
   }
-  // 急腹证
   if ((text.includes('潮热') || text.includes('谵语')) && text.includes('便秘') &&
       (text.includes('腹满') || text.includes('拒按'))) {
     return { title: '急腹证 (大承气汤证)', text: '急下存阴, 大承气汤' };
   }
-  // 大出血
   if ((text.includes('大出血') || text.includes('吐血') || text.includes('便血') || text.includes('崩漏')) &&
       (text.includes('脉芤') || text.includes('脉微细') || text.includes('面色苍白'))) {
     return { title: '大出血 / 脱证', text: '实热用泻心汤, 虚寒用黄土汤, 气脱用独参汤' };
   }
-  // 阳虚外感
   if (text.includes('恶寒') && !text.includes('发热') && text.includes('脉沉细') && text.includes('精神不振')) {
     return { title: '阳虚外感 (少阴表证)', text: '麻黄附子细辛汤 / 麻黄附子甘草汤' };
   }
@@ -845,14 +979,14 @@ function renderCases() {
     c.rx.toLowerCase().includes(q)
   );
   document.getElementById('case_list').innerHTML = filtered.map(c => `
-    <div class="case-card">
-      <div class="case-title">${c.name}</div>
-      <div class="case-meta">${c.main}</div>
-      <div>${c.tongue && c.tongue !== '(未记)' ? `<span class="case-pulse">舌: ${c.tongue}</span>` : ''}
-           ${c.pulse && c.pulse !== '(未记)' ? `<span class="case-pulse" style="background:#fef3c7">脉: ${c.pulse}</span>` : ''}</div>
-      <div class="case-rx"><strong>处方:</strong> ${c.rx}</div>
+    <div class="case-card" style="background:#fff8e7;border-left:3px solid var(--gold);padding:8px 10px;margin:5px 0;border-radius:0 5px 5px 0;font-size:12px">
+      <div style="font-weight:600;color:var(--primary);margin-bottom:3px;font-size:13px">${c.name}</div>
+      <div style="font-size:10px;color:var(--ink-light);margin-bottom:4px">${c.main}</div>
+      <div>${c.tongue && c.tongue !== '(未记)' ? `<span style="background:#fef2f2;padding:2px 6px;border-radius:3px;display:inline-block;margin:2px 2px;font-size:11px">舌: ${c.tongue}</span>` : ''}
+           ${c.pulse && c.pulse !== '(未记)' ? `<span style="background:#fff3cd;padding:2px 6px;border-radius:3px;display:inline-block;margin:2px 2px;font-size:11px">脉: ${c.pulse}</span>` : ''}</div>
+      <div style="background:#f0f0f0;padding:3px 6px;border-radius:3px;margin:2px 0;font-size:11px"><strong>处方:</strong> ${c.rx}</div>
       <div style="font-size:11px;margin-top:3px"><strong>结果:</strong> ${c.result}</div>
-      <div class="quote" style="font-size:11px;font-style:italic;background:#fdf6e3;padding:4px 6px;border-radius:3px;margin-top:3px;border-left:2px solid var(--gold)"><strong>按:</strong> ${c.quote}</div>
+      <div style="font-size:11px;font-style:italic;background:#fdf6e3;padding:4px 6px;border-radius:3px;margin-top:3px;border-left:2px solid var(--gold)"><strong>按:</strong> ${c.quote}</div>
     </div>
   `).join('');
 }
