@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#7b2c2c">
 <meta name="description" content="胡希恕六经辨证体系 100% 复现 - 四诊合参 表格化 - 314 方证">
-<title>胡希恕六经辨证系统 v4.3 - 亲临复现</title>
+<title>胡希恕六经辨证系统 v4.3.2 - 亲临复现</title>
 <style>
 :root{
   --primary:#7b2c2c; --primary-light:#9d3b3b; --gold:#c89b3c;
@@ -151,7 +151,7 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
 <body>
 <div class="app">
   <div class="header">
-    <h1>胡希恕六经辨证系统 v4.3 - 亲临复现</h1>
+    <h1>胡希恕六经辨证系统 v4.3.2 - 亲临复现</h1>
     <p>100% 复现胡老临诊动作流 · 314 方证 · 30 句语录 · 24 核心方证 · 22 加减小方 · 20 真实医案 · 危险证识别</p>
   </div>
 
@@ -482,6 +482,12 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
       <div class="sub-label" style="background:#e8f5e8;padding:3px 6px;border-radius:3px">⑥ 腹力 (全身张力指标)</div>
       <div class="chips" id="chips-fu-fuli"></div>
       <p style="font-size:10px;color:var(--ink-light);margin:2px 0 4px">强(实可攻) / 中(平) / 弱(虚慎攻)</p>
+    </div>
+
+    <div class="card">
+      <h3>⑤-3 腹诊速选 (27 个常用腹证 chip)</h3>
+      <p style="font-size:10px;color:var(--ink-light);margin:3px 0">💡 提示: 上面六大分类 + 这里速选, 一起用, 最全</p>
+      <div class="chips" id="chips-abdomen"></div>
     </div>
 
     <div style="margin-top:6px">
@@ -1043,8 +1049,8 @@ function pickCell(td) {
   CURRENT_CELL = td;
   // 显示当前格信息
   const h = td.dataset.h === 'L' ? '左手' : '右手';
-  const posMap = {cun:'寸', guan:'关', chi:'尺'};
-  const depMap = {fu:'浮取', zhong:'中取', chen:'沉取'};
+  const posMap = {'寸':'寸', '关':'关', '尺':'尺'};
+  const depMap = {'浮':'浮取', '中':'中取', '沉':'沉取'};
   document.getElementById('picker_target').textContent = h + '·' + posMap[td.dataset.p] + '·' + depMap[td.dataset.d];
   // 打开 picker 前, 预填该格已存在的脉象
   PICKED.clear();
@@ -1152,8 +1158,8 @@ function savePulse() {
   document.querySelectorAll('#pulse_table td[data-h]').forEach(td => {
     if (td.dataset.pulse) {
       const h = td.dataset.h === 'L' ? '左' : '右';
-      const posMap = {cun:'寸', guan:'关', chi:'尺'};
-      const depMap = {fu:'浮', zhong:'中', chen:'沉'};
+      const posMap = {'寸':'寸', '关':'关', '尺':'尺'};
+      const depMap = {'浮':'浮', '中':'中', '沉':'沉'};
       cells.push(h + posMap[td.dataset.p] + '·' + depMap[td.dataset.d] + '取:' + td.dataset.pulse);
       // 复合脉拆分后逐个加入 (参与辨证)
       td.dataset.pulse.split('+').forEach(p => SELECTED.pulse.add(p));
@@ -1536,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sjf = document.getElementById('search_jf');
   if (sjf) sjf.addEventListener('input', renderHeFang);
   const sf = document.getElementById('search_formula');
-  if (sf) sf.addEventListener('input', renderFormulas);
+  if (sf) sf.addEventListener('input', renderFormulaList);
 });
 </script>
 </body>
