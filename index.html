@@ -312,7 +312,7 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
     <!-- ===== 总按 (先看整体, 胡老必做第一步) ===== -->
     <div class="card" style="background:linear-gradient(135deg,#fff8e7,#fdf6e3);border:2px solid var(--gold)">
       <h3 style="color:var(--primary)">① 总按 (三指同时按, 先看整体) — 胡老强调必先做</h3>
-      <p style="font-size:11px;color:var(--ink-light);margin:3px 0">⚠️ <strong>先总按看大势, 不要一开始就分部</strong>。三指同时按寸关尺, 整体感受脉象</p>
+      <p style="font-size:11px;color:var(--ink-light);margin:3px 0">⚠️ <strong>先总按看大势, 不要一开始就分部</strong>。<strong style="color:var(--danger)">总按不分左右手</strong> (整体气血状态, 不分寸关尺); 双手区别只用于分部</p>
 
       <div class="sub-label" style="background:#fef3c7;padding:3px 6px;border-radius:3px">脉位 (浮沉) — 病位浅深</div>
       <div class="chips" id="chips-pulse-wei">
@@ -392,11 +392,14 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
       </table>
 
       <div class="pulse-picker" id="pulse_picker_wrap" style="display:none">
-        <div class="pulse-picker-title">→ 选择脉象填入选中格 (点其他位置取消)</div>
+        <div class="pulse-picker-title">→ 选中格: <span id="picker_target" style="color:var(--primary);font-weight:600"></span> — <span style="color:var(--danger)">可点多个脉象组成复合脉 (如 沉+细+弦)</span></div>
         <div id="pulse_picker" class="chips"></div>
-        <div style="margin-top:4px">
-          <button class="secondary" onclick="cancelPick()">取消选择</button>
+        <div style="margin-top:4px;display:flex;gap:4px">
+          <button class="primary" style="flex:2;margin:0;padding:6px" onclick="confirmPick()">✓ 填入选中格</button>
+          <button class="secondary" style="flex:1;margin:0" onclick="cancelPick()">取消</button>
+          <button class="secondary" style="flex:1;margin:0" onclick="clearPickInPicker()">清空已选</button>
         </div>
+        <div id="picker_selected_preview" style="font-size:11px;color:var(--ink-light);margin-top:4px">已选: (无)</div>
       </div>
 
       <div style="margin-top:8px;display:flex;gap:5px">
@@ -854,6 +857,7 @@ let SELECTED = {
 };
 let CURRENT_HAND = 'L';
 let CURRENT_CELL = null;
+let PICKED = new Set();        // picker 中已选的脉象 (复合脉)
 let CURRENT_MERIDIAN = 'all';
 let CURRENT_STEP = 1;
 
@@ -948,22 +952,24 @@ document.addEventListener('DOMContentLoaded', () => {
     ac.appendChild(span);
   });
 
-  // 脉诊表 picker
+  // 脉诊表 picker (支持复合脉多选)
   const pp = document.getElementById('pulse_picker');
   Object.keys(PULSE_TYPES).forEach(p => {
     const span = document.createElement('span');
     span.className = 'chip pulse';
     span.textContent = p;
     span.title = PULSE_TYPES[p];
+    span.dataset.pulse = p;
     span.onclick = () => {
-      if (CURRENT_CELL) {
-        CURRENT_CELL.textContent = p;
-        CURRENT_CELL.classList.remove('active');
-        CURRENT_CELL.classList.add('filled');
-        CURRENT_CELL.dataset.pulse = p;
-        document.getElementById('pulse_picker_wrap').style.display = 'none';
-        CURRENT_CELL = null;
+      // 多选切换: 选中即加入 PICKED, 取消即移除
+      if (PICKED.has(p)) {
+        PICKED.delete(p);
+        span.classList.remove('selected');
+      } else {
+        PICKED.add(p);
+        span.classList.add('selected');
       }
+      updatePickerPreview();
     };
     pp.appendChild(span);
   });
@@ -1035,12 +1041,64 @@ function pickCell(td) {
   document.querySelectorAll('#pulse_table td').forEach(t => t.classList.remove('active'));
   td.classList.add('active');
   CURRENT_CELL = td;
+  // 显示当前格信息
+  const h = td.dataset.h === 'L' ? '左手' : '右手';
+  const posMap = {cun:'寸', guan:'关', chi:'尺'};
+  const depMap = {fu:'浮取', zhong:'中取', chen:'沉取'};
+  document.getElementById('picker_target').textContent = h + '·' + posMap[td.dataset.p] + '·' + depMap[td.dataset.d];
+  // 打开 picker 前, 预填该格已存在的脉象
+  PICKED.clear();
+  if (td.dataset.pulse) {
+    const arr = td.dataset.pulse.split('+');
+    arr.forEach(p => PICKED.add(p));
+  }
+  // 同步 chip 视觉
+  document.querySelectorAll('#pulse_picker .chip').forEach(c => {
+    c.classList.toggle('selected', PICKED.has(c.dataset.pulse));
+  });
+  updatePickerPreview();
   document.getElementById('pulse_picker_wrap').style.display = 'block';
+}
+
+function updatePickerPreview() {
+  const el = document.getElementById('picker_selected_preview');
+  if (PICKED.size === 0) {
+    el.innerHTML = '已选: <span style="color:var(--ink-light)">(无, 请点选脉象)</span>';
+  } else {
+    el.innerHTML = '已选 <strong style="color:var(--primary)">' + PICKED.size + '</strong> 个脉象: ' +
+      [...PICKED].map(p => '<span style="background:#fff3cd;padding:1px 4px;border-radius:3px;margin:0 2px">' + p + '</span>').join('') +
+      ' → 复合脉: <strong style="color:var(--danger)">' + [...PICKED].join('+') + '</strong>';
+  }
+}
+
+function confirmPick() {
+  if (!CURRENT_CELL) return;
+  if (PICKED.size === 0) {
+    alert('请至少选一个脉象');
+    return;
+  }
+  const composite = [...PICKED].join('+');
+  CURRENT_CELL.textContent = composite;
+  CURRENT_CELL.classList.remove('active');
+  CURRENT_CELL.classList.add('filled');
+  CURRENT_CELL.dataset.pulse = composite;
+  // 把复合脉拆开逐个加入 SELECTED.pulse (参与辨证)
+  PICKED.forEach(p => SELECTED.pulse.add(p));
+  document.getElementById('pulse_picker_wrap').style.display = 'none';
+  PICKED.clear();
+  CURRENT_CELL = null;
+}
+
+function clearPickInPicker() {
+  PICKED.clear();
+  document.querySelectorAll('#pulse_picker .chip').forEach(c => c.classList.remove('selected'));
+  updatePickerPreview();
 }
 
 function cancelPick() {
   if (CURRENT_CELL) CURRENT_CELL.classList.remove('active');
   CURRENT_CELL = null;
+  PICKED.clear();
   document.getElementById('pulse_picker_wrap').style.display = 'none';
 }
 
@@ -1067,6 +1125,7 @@ function clearPulse() {
   });
   document.querySelectorAll('.chip.pulse').forEach(c => c.classList.remove('selected'));
   SELECTED.pulse.clear();
+  PICKED.clear();
   // 清空总按 4 类
   SELECTED.overall = { wei: null, lu: null, li: null, xing: null };
   renderOverallSummary();
@@ -1089,23 +1148,35 @@ function clearAbdomen() {
 
 function savePulse() {
   const cells = [];
+  SELECTED.pulse.clear();
   document.querySelectorAll('#pulse_table td[data-h]').forEach(td => {
     if (td.dataset.pulse) {
       const h = td.dataset.h === 'L' ? '左' : '右';
-      cells.push(h + td.dataset.p + '·' + td.dataset.d + ':' + td.dataset.pulse);
-      SELECTED.pulse.add(td.dataset.pulse);
+      const posMap = {cun:'寸', guan:'关', chi:'尺'};
+      const depMap = {fu:'浮', zhong:'中', chen:'沉'};
+      cells.push(h + posMap[td.dataset.p] + '·' + depMap[td.dataset.d] + '取:' + td.dataset.pulse);
+      // 复合脉拆分后逐个加入 (参与辨证)
+      td.dataset.pulse.split('+').forEach(p => SELECTED.pulse.add(p));
     }
   });
-  document.querySelectorAll('.chip.pulse').forEach(c => {
-    if (SELECTED.pulse.has(c.textContent)) c.classList.add('selected');
-    else c.classList.remove('selected');
-  });
+  // 加入总按 4 类
+  const o = SELECTED.overall;
+  const oParts = [];
+  if (o.wei)  { SELECTED.pulse.add(o.wei); oParts.push('脉位 ' + o.wei); }
+  if (o.lu)   { SELECTED.pulse.add(o.lu); oParts.push('脉率 ' + o.lu); }
+  if (o.li)   { SELECTED.pulse.add(o.li); oParts.push('脉力 ' + o.li); }
+  if (o.xing) { SELECTED.pulse.add(o.xing); oParts.push('脉形 ' + o.xing); }
   let html = '<strong>已填脉诊:</strong><br>';
-  html += cells.length ? cells.join(' | ') : '(无)';
+  if (oParts.length) html += '【总按】' + oParts.join(' · ') + '<br>';
+  html += cells.length ? cells.join(' | ') : '(未填分部)';
   if (SELECTED.pulse.size) {
-    html += '<br><strong>脉象速选:</strong> ' + [...SELECTED.pulse].join('、');
+    html += '<br><strong>全部脉象:</strong> ' + [...SELECTED.pulse].join('、');
   }
   document.getElementById('pulse_summary').innerHTML = html;
+  // 同步 chip 视觉
+  document.querySelectorAll('.chip.pulse').forEach(c => {
+    c.classList.toggle('selected', SELECTED.pulse.has(c.textContent));
+  });
 }
 
 function saveAbdomen() {
