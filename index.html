@@ -62,8 +62,16 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
 .result .quote{font-size:11px;color:var(--ink-light);font-style:italic;background:#fdf6e3;padding:5px 7px;border-radius:3px;margin-top:3px;border-left:2px solid var(--gold)}
 .result .transfer{font-size:11px;color:var(--warning);background:#fff8e7;padding:3px 7px;border-radius:3px;margin-top:3px}
 .result .warning{font-size:11px;color:var(--danger);background:#fef2f2;padding:3px 7px;border-radius:3px;margin-top:3px;font-weight:500}
+.result .mods{font-size:11px;color:#1e40af;background:#dbeafe;padding:3px 7px;border-radius:3px;margin-top:3px;border-left:2px solid #1e40af}
+.result .reqall-block,.result .reqany-block{font-size:10px;margin-top:4px;line-height:1.7}
+.result .req-label{color:var(--ink);font-weight:600;margin-right:3px}
+.req-chip{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;margin:1px 2px;font-weight:500}
+.req-chip.hit{background:#d1fae5;color:#065f46;border:1px solid #10b981}
+.req-chip.miss{background:#fee2e2;color:#991b1b;border:1px solid #ef4444;text-decoration:line-through}
+.req-chip.any{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
 .badge{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:500;margin-left:2px}
 .badge-crit{background:var(--danger);color:#fff}
+.badge-warn{background:#f59e0b;color:#fff}
 .badge-pulse{background:#fef3c7;color:#92400e}
 .badge-mods{background:#dbeafe;color:#1e40af}
 .badge-trans{background:#fce7f3;color:#9d174d}
@@ -151,7 +159,7 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
 <body>
 <div class="app">
   <div class="header">
-    <h1>胡希恕六经辨证系统 v4.3.2 - 亲临复现</h1>
+    <h1>胡希恕六经辨证系统 v4.3.3 - 亲临复现</h1>
     <p>100% 复现胡老临诊动作流 · 314 方证 · 30 句语录 · 24 核心方证 · 22 加减小方 · 20 真实医案 · 危险证识别</p>
   </div>
 
@@ -1408,29 +1416,66 @@ function scoreFormula(f, text) {
   let total = 0;
   const mainMatch = (f.main || []).filter(m => text.includes(m)).length;
   const reqAnyMatch = (f.required_any || []).filter(m => text.includes(m)).length;
-  const reqAllHit = (f.required_all || []).length === 0 || (f.required_all || []).every(m => text.includes(m));
+  const reqAllList = f.required_all || [];
+  const reqAllHit = reqAllList.length === 0 || reqAllList.every(m => text.includes(m));
+  const reqAllMiss = reqAllList.filter(m => !text.includes(m));
   const pulseMatch = f.pulse ? text.includes(f.pulse) : false;
   const tongueMatch = f.tongue ? text.includes(f.tongue) : false;
   const diseaseMatch = f.disease ? text.includes(f.disease) : false;
 
   total += mainMatch * 10;
-  if (reqAllHit && (f.required_all || []).length > 0) total += 50;
-  total += reqAnyMatch * 5;
-  if (pulseMatch) total += 8;
-  if (tongueMatch) total += 5;
+  if (reqAllHit && reqAllList.length > 0) total += 80;        // v4.3.3: 必见症权重提至80
+  else if (reqAllList.length > 0 && !reqAllHit) total -= 30;  // v4.3.3: 缺一必见症扣30
+  total += reqAnyMatch * 8;
+  if (pulseMatch) total += 12;
+  if (tongueMatch) total += 8;
   if (diseaseMatch) total += 15;
 
-  return { total, mainMatch, reqAnyMatch, reqAllHit, pulseMatch, tongueMatch, diseaseMatch };
+  return { total, mainMatch, reqAnyMatch, reqAllHit, reqAllMiss, pulseMatch, tongueMatch, diseaseMatch };
 }
 
 function renderFormula(f, detail) {
   const mClass = 'm-' + f.six_meridian;
+  const hasReqAll = f.required_all && f.required_all.length > 0;
+  const hasReqAny = f.required_any && f.required_any.length > 0;
+  const hasMods = f.mods && f.mods.trim().length > 0;
+  // 必见症 chip 颜色: 全命中=绿, 部分缺=红
+  let reqAllHtml = '';
+  if (hasReqAll) {
+    const miss = detail.reqAllMiss || [];
+    reqAllHtml = '<div class="reqall-block">' +
+      '<span class="req-label">必见症 (必须全有):</span> ' +
+      f.required_all.map(m => {
+        const isMiss = miss.includes(m);
+        return `<span class="req-chip ${isMiss ? 'miss' : 'hit'}">${m}${isMiss ? ' ✗' : ' ✓'}</span>`;
+      }).join(' ') +
+      '</div>';
+  }
+  let reqAnyHtml = '';
+  if (hasReqAny) {
+    const matched = f.required_any.filter(m => detail !== undefined && (detail.reqAnyMatch > 0));
+    const isMatched = m => matched.includes(m) || f.required_any.slice(0, detail.reqAnyMatch).includes(m);
+    reqAnyHtml = '<div class="reqany-block">' +
+      '<span class="req-label">必有一症 (满足任一加分):</span> ' +
+      f.required_any.map(m => {
+        // 简化判断: 从 detail 里取 reqAnyMatch 数量, 前 N 个为命中
+        return `<span class="req-chip any">${m}</span>`;
+      }).join(' ') +
+      '</div>';
+  }
+  let modsHtml = '';
+  if (hasMods) {
+    modsHtml = `<div class="mods">🔧 <strong>经典加减:</strong> ${f.mods}</div>`;
+  }
   return `<div class="result">
-    <h4><span class="meridian ${mClass}">${f.six_meridian}</span>${f.name} <span class="badge badge-mer">${f.category}</span> ${detail.reqAllHit && f.required_all && f.required_all.length > 0 ? '<span class="badge badge-crit">必见症✓</span>' : ''}</h4>
-    <div class="meta">病机: ${f.disease} | 舌: ${f.tongue} | 脉: ${f.pulse} | 匹配分: ${detail.total} (主症×${detail.mainMatch})</div>
+    <h4><span class="meridian ${mClass}">${f.six_meridian}</span>${f.name} <span class="badge badge-mer">${f.category}</span> ${detail.reqAllHit && hasReqAll ? '<span class="badge badge-crit">必见症全✓</span>' : (hasReqAll ? '<span class="badge badge-warn">缺必见症</span>' : '')}</h4>
+    <div class="meta">病机: ${f.disease} | 舌: ${f.tongue} | 脉: ${f.pulse} | 匹配分: <strong>${detail.total}</strong> (主症×${detail.mainMatch} + 见症×${detail.reqAnyMatch})</div>
+    ${reqAllHtml}
+    ${reqAnyHtml}
     <div class="comp"><strong>组成:</strong> ${f.comp}</div>
     <div class="quote">${f.quote}</div>
-    ${f.transfer ? `<div class="transfer">转方: ${f.transfer}</div>` : ''}
+    ${f.transfer ? `<div class="transfer">🔁 <strong>传变转方:</strong> ${f.transfer}</div>` : ''}
+    ${modsHtml}
     ${f.warning ? `<div class="warning">⚠️ ${f.warning}</div>` : ''}
   </div>`;
 }
@@ -1464,7 +1509,8 @@ function showFormulaDetail(name) {
   if (!f) return;
   document.getElementById('search_formula').value = name;
   const list = document.getElementById('formula_list');
-  list.innerHTML = renderFormula(f, { total: 0, mainMatch: 0, reqAllHit: true });
+  // 默认传 reqAllMiss 为空数组, reqAllHit=true, 详情页只展示方剂结构, 不做匹配评分
+  list.innerHTML = renderFormula(f, { total: '—', mainMatch: 0, reqAnyMatch: 0, reqAllHit: true, reqAllMiss: [] });
 }
 
 function filterMeridian(m, el) {
