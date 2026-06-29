@@ -1489,15 +1489,15 @@ function scoreFormula(f, text) {
   const mainMatch = (f.main || []).filter(m => text.includes(m)).length;
   const reqAnyMatch = (f.required_any || []).filter(m => text.includes(m)).length;
   const reqAllList = f.required_all || [];
-  const reqAllHit = reqAllList.length === 0 || reqAllList.every(m => text.includes(m));
+  const reqAllHit = reqAllList.length > 0 && reqAllList.every(m => text.includes(m));
   const reqAllMiss = reqAllList.filter(m => !text.includes(m));
   const pulseMatch = f.pulse ? text.includes(f.pulse) : false;
   const tongueMatch = f.tongue ? text.includes(f.tongue) : false;
   const diseaseMatch = f.disease ? text.includes(f.disease) : false;
 
   total += mainMatch * 10;
-  if (reqAllHit && reqAllList.length > 0) total += 80;        // 必见症权重提至80
-  else if (reqAllList.length > 0 && !reqAllHit) total -= 30;  // 缺一必见症扣30
+  if (reqAllHit) total += 80;                // 必见症全中: +80
+  else if (reqAllList.length > 0) total -= 30; // 有必见症但缺一项: -30
   total += reqAnyMatch * 8;
   if (pulseMatch) total += 18;        // v4.3.4: 脉象权重 12→18 (胡老最重主脉)
   if (tongueMatch) total += 10;       // v4.3.4: 舌象权重 8→10
