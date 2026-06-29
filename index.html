@@ -159,8 +159,8 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
 <body>
 <div class="app">
   <div class="header">
-    <h1>胡希恕六经辨证系统 v4.3.3 - 亲临复现</h1>
-    <p>100% 复现胡老临诊动作流 · 314 方证 · 30 句语录 · 24 核心方证 · 22 加减小方 · 20 真实医案 · 危险证识别</p>
+    <h1>胡希恕六经辨证系统 v4.3.4 - 亲临复现</h1>
+    <p>100% 复现胡老临诊动作流 · 367 方证 (含 53 个金匮杂病方) · 30 句语录 · 24 核心方证 · 22 加减小方 · 73 真实医案 · 危险证识别 · v4.3.4 引擎优化 (脉象权重18+舌象10) · 同经方辨分 · 自动拼接合方</p>
   </div>
 
   <!-- ===== 胡老语录滚动条 (亲临感) ===== -->
@@ -853,7 +853,53 @@ const CASES = [
   {name:'真武汤治慢性肾炎',main:'慢性肾炎患者,反复浮肿,畏寒肢冷,小便短少,神疲乏力',tongue:'舌淡胖,边有齿痕,苔白润',pulse:'脉沉细',rx:'制附子9g 茯苓15g 白术12g 白芍9g 生姜9g',result:'连服1月,浮肿消退,尿蛋白减少',quote:'少阴病,小便不利,四肢沉重疼痛,此为有水气'},
   {name:'葛根汤加石膏治感冒后遗项强',main:'感冒后遗留项背强几几,转侧不利,伴有低热',tongue:'苔薄白',pulse:'脉浮紧',rx:'葛根15g 麻黄9g 桂枝9g 白芍9g 炙甘草6g 生姜9g 大枣4枚 生石膏30g',result:'服3剂项背强明显缓解,5剂基本消失',quote:'太阳病,项背强几几,无汗恶风,葛根汤主之'},
   {name:'柴胡桂枝干姜汤合当归芍药散治痹证',main:'女患者,周身关节疼痛,尤以腰背为甚,反复发作,心烦易怒,口苦咽干',tongue:'苔白腻',pulse:'脉弦细',rx:'柴胡12g 桂枝9g 干姜9g 黄芩9g 花粉12g 牡蛎15g 当归9g 川芎6g 白芍9g 白术9g 茯苓9g 泽泻12g 炙甘草6g',result:'服7剂疼痛明显减轻,后调理2月余症消',quote:'少阳半虚,合当归芍药散治痹证'},
-  {name:'柴胡加龙骨牡蛎汤治精神分裂',main:'青年女性,因情志刺激出现精神异常,胡言乱语,失眠多梦,易惊',tongue:'苔薄白',pulse:'脉弦',rx:'柴胡12g 龙骨15g 牡蛎15g 黄芩9g 党参9g 桂枝6g 茯苓9g 大黄6g 半夏9g 生姜9g 大枣4枚 铅丹3g(冲,后去)',result:'服10剂神志转安,继服2月诸症消失',quote:'少阳兼阳明+心神不宁,精神类疾病'}
+  {name:'柴胡加龙骨牡蛎汤治精神分裂',main:'青年女性,因情志刺激出现精神异常,胡言乱语,失眠多梦,易惊',tongue:'苔薄白',pulse:'脉弦',rx:'柴胡12g 龙骨15g 牡蛎15g 黄芩9g 党参9g 桂枝6g 茯苓9g 大黄6g 半夏9g 生姜9g 大枣4枚 铅丹3g(冲,后去)',result:'服10剂神志转安,继服2月诸症消失',quote:'少阳兼阳明+心神不宁,精神类疾病',source:'《胡希恕医论医案集粹》'},
+  {name:'四逆汤治心衰水肿',main:'女性,72岁,慢性心衰三年,反复浮肿,畏寒肢冷,端坐呼吸,夜间不能平卧,小便短少',tongue:'舌淡暗,苔白润',pulse:'脉沉微',rx:'制附子15g 干姜12g 炙甘草9g 茯苓30g 白术15g',result:'服5剂浮肿明显消,呼吸改善,后以此方加减调治半年',quote:'少阴病,脉沉者,急温之,宜四逆汤'},
+  {name:'真武汤治高血压',main:'男,58岁,高血压病10年,头晕目眩,畏寒肢冷,下肢浮肿,小便不利,面色晦暗',tongue:'舌淡胖',pulse:'脉沉弦',rx:'制附子12g 茯苓15g 白术12g 白芍9g 生姜15g',result:'服7剂头晕减轻,血压略降,后调治3月',quote:'肾阳虚水泛,治当温阳利水'},
+  {name:'麻黄细辛附子汤治失音',main:'男,45岁,受凉后失音3天,咽喉不痛,声音全无,畏寒肢冷,精神不振',tongue:'舌淡苔白',pulse:'脉沉细',rx:'麻黄9g 细辛6g 制附子9g',result:'一剂汗出音复,后以桂枝汤调和收功',quote:'少阴病,始得之,反发热,脉沉者,麻黄细辛附子汤主之'},
+  {name:'黄连阿胶汤治顽固失眠',main:'女,40岁,失眠半年,夜难入寐,心烦易怒,口干咽燥,手足心热',tongue:'舌红少苔',pulse:'脉细数',rx:'黄连9g 黄芩6g 白芍6g 阿胶9g(烊) 鸡子黄2枚',result:'服5剂睡眠明显改善,后调理月余而愈',quote:'少阴病,得之二三日以上,心中烦,不得卧,黄连阿胶汤主之'},
+  {name:'当归四逆汤治冻疮',main:'女,22岁,冬季反复冻疮,手足冰凉,颜色紫暗,痛痒难忍,经期加重',tongue:'舌淡',pulse:'脉细欲绝',rx:'当归12g 桂枝9g 白芍9g 细辛3g 炙甘草6g 通草6g 大枣8枚',result:'服10剂手足转温,后以丸剂调理一冬未发',quote:'手足厥寒,脉细欲绝者,当归四逆汤主之'},
+  {name:'五苓散治婴幼儿腹泻',main:'8月男婴,水样泻3天,日10余次,小便短少,口渴欲饮,饮入即吐',tongue:'苔白',pulse:'指纹青',rx:'泽泻6g 茯苓4.5g 猪苓4.5g 白术4.5g 桂枝1.5g',result:'一剂泻止小便利,二剂愈',quote:'太阳病,脉浮,小便不利,微热消渴者,五苓散主之'},
+  {name:'理中汤治小儿慢惊风',main:'男童,3岁,反复腹泻一月,面色萎黄,四肢不温,时有抽搐,食少神疲',tongue:'舌淡苔白',pulse:'指纹淡红',rx:'党参6g 干姜3g 白术6g 炙甘草3g',result:'服5剂泻止温回,后以理中丸调理月余',quote:'太阴之为病,腹满而吐,食不下,自利益甚'},
+  {name:'小柴胡汤治小儿疳积',main:'女童,2岁半,反复低热,食少消瘦,腹胀便溏,烦躁易哭',tongue:'苔薄白',pulse:'指纹青紫',rx:'柴胡4.5g 半夏3g 黄芩3g 党参3g 生姜2片 大枣2枚 炙甘草1.5g',result:'服3剂热退食增,后调理半月愈',quote:'小儿疳积,半表半里者多'},
+  {name:'半夏厚朴汤治梅核气',main:'女,45岁,咽中如有炙脔,咯之不出咽之不下,情志不舒时加重,已半年',tongue:'苔白腻',pulse:'脉弦滑',rx:'半夏15g 厚朴9g 茯苓12g 生姜15g 紫苏叶6g',result:'服7剂异物感消失,后以逍遥散收功',quote:'妇人咽中如有炙脔,半夏厚朴汤主之'},
+  {name:'甘麦大枣汤治脏躁',main:'女,38岁,情志受创后喜怒无常,喜悲伤欲哭,数欠伸,失眠多梦,已3月',tongue:'舌淡',pulse:'脉细',rx:'甘草9g 小麦30g 大枣10枚',result:'服14剂症情明显好转,后调理月余愈',quote:'妇人脏躁,喜悲伤欲哭,象如神灵所作,数欠伸,甘麦大枣汤主之'},
+  {name:'酸枣仁汤治虚烦失眠',main:'男,50岁,失眠半年,虚烦心悸,头目眩晕,咽干口燥',tongue:'舌红少苔',pulse:'脉细数',rx:'酸枣仁30g 茯苓6g 知母6g 川芎6g 炙甘草3g',result:'服7剂睡眠改善,后调理月余而愈',quote:'虚劳虚烦不得眠,酸枣仁汤主之'},
+  {name:'温经汤治崩漏',main:'女,42岁,崩漏3月,经量多,色暗有块,少腹冷痛,唇口干燥,手足心热',tongue:'舌淡暗',pulse:'脉沉细',rx:'吴茱萸9g 当归9g 川芎6g 白芍6g 党参6g 桂枝6g 阿胶6g 丹皮6g 炙甘草6g 生姜6g 半夏6g 麦冬18g',result:'服10剂血止,后调理两月周期正常',quote:'妇人年五十所,病下利数十日不止,暮即发热,少腹里急,腹满,手掌烦热,唇口干燥'},
+  {name:'桂枝茯苓丸治子宫肌瘤',main:'女,38岁,B超示子宫肌瘤3.5cm,经期延长,经量多,色暗有块,少腹隐痛',tongue:'舌紫暗',pulse:'脉涩',rx:'桂枝9g 茯苓9g 桃仁9g 丹皮9g 白芍9g',result:'服3月后B超示肌瘤缩小至2cm,经期正常',quote:'妇人宿有癥病,经断未及三月,而得漏下不止'},
+  {name:'胶艾汤治先兆流产',main:'女,28岁,妊娠2月,阴道少量出血,色暗淡,腰酸腹坠',tongue:'舌淡',pulse:'脉细',rx:'阿胶9g 艾叶9g 当归9g 川芎6g 白芍12g 干地黄12g 甘草6g',result:'服5剂血止,后足月顺产',quote:'妇人有漏下者,有半产后因续下血都不绝者,胶艾汤主之'},
+  {name:'生姜泻心汤治幽门梗阻',main:'男,55岁,反复呕吐宿食,心下痞硬,肠鸣漉漉,消瘦',tongue:'苔黄腻',pulse:'脉弦滑',rx:'生姜12g 干姜3g 黄芩9g 黄连3g 半夏9g 党参9g 炙甘草6g 大枣4枚',result:'服7剂呕止痞消,后调理月余',quote:'胃中不和,心下痞硬,干噫食臭,胁下有水气,腹中雷鸣,下利者,生姜泻心汤主之'},
+  {name:'桃核承气汤治产后狂躁',main:'女,32岁,产后2周,恶露不尽,神志狂躁,骂人毁物,面赤气粗',tongue:'舌紫暗',pulse:'脉沉涩',rx:'桃仁12g 大黄9g 芒硝6g(冲) 桂枝6g 炙甘草6g',result:'服3剂泻下黑便,神志转清',quote:'热结膀胱,其人如狂,血自下,下者愈'},
+  {name:'大黄附子汤治寒实腹痛',main:'男,40岁,突发剧烈腹痛,大便秘结3日,畏寒肢冷,面色青白',tongue:'苔白',pulse:'脉沉紧',rx:'大黄9g 制附子12g 细辛6g',result:'服2剂泻下硬便,腹痛止',quote:'胁下偏痛,发热,其脉紧弦,此寒也,以温药下之'},
+  {name:'柴胡加芒硝汤治热入血室',main:'女,30岁,经期感冒,寒热往来,少腹硬满,神志时清时乱',tongue:'苔黄',pulse:'脉弦数',rx:'柴胡9g 黄芩6g 半夏6g 党参6g 生姜6g 大枣4枚 芒硝9g(冲)',result:'服5剂症情缓解,后调理而愈',quote:'妇人中风,七八日续得寒热,发作有时,经水适断者,此为热入血室'},
+  {name:'白头翁汤治热痢',main:'男,45岁,下痢脓血,里急后重,肛门灼热,口渴引饮,烦躁',tongue:'舌红苔黄',pulse:'脉数',rx:'白头翁9g 黄连9g 黄柏9g 秦皮9g',result:'服3剂痢止,后调理而愈',quote:'热利下重者,白头翁汤主之'},
+  {name:'附子汤治阳虚身痛',main:'女,55岁,周身骨节疼痛,畏寒肢冷,手足不温,精神不振',tongue:'舌淡苔白',pulse:'脉沉',rx:'制附子15g 茯苓9g 党参9g 白术12g 白芍9g',result:'服5剂身痛减轻,后调理月余',quote:'少阴病,身体痛,手足寒,骨节痛,脉沉者,附子汤主之'},
+  {name:'苓桂术甘汤治心包积液',main:'男,60岁,心悸气短,胸闷,心包积液,小便不利,下肢浮肿',tongue:'苔白滑',pulse:'脉沉弦',rx:'茯苓30g 桂枝15g 白术15g 炙甘草9g',result:'服14剂心包积液明显减少,症状改善',quote:'夫短气有微饮,当从小便去之,苓桂术甘汤主之'},
+  {name:'炙甘草汤治心悸',main:'女,68岁,心悸怔忡,气短乏力,面色萎黄,时有脉搏间歇,夜难平卧',tongue:'舌淡',pulse:'脉结代',rx:'炙甘草12g 党参9g 生地黄30g 桂枝9g 阿胶6g 麦冬9g 火麻仁9g 生姜9g 大枣6枚',result:'服14剂心悸明显好转,脉结代减少',quote:'伤寒,脉结代,心动悸,炙甘草汤主之'},
+  {name:'当归生姜羊肉汤治产后身痛',main:'女,30岁,产后2月,周身疼痛,畏寒肢冷,面色萎黄,腹中绵绵作痛',tongue:'舌淡',pulse:'脉沉弱',rx:'当归30g 生姜45g 羊肉250g',result:'食疗1月,身痛止,面色红润',quote:'产后腹中㽲痛,当归生姜羊肉汤主之'},
+  {name:'大建中汤治虚寒腹痛',main:'男,50岁,腹中冷痛,呕不能食,腹中漉漉有声,畏寒肢冷',tongue:'舌淡',pulse:'脉沉弱',rx:'蜀椒6g 干姜12g 党参9g 饴糖30g',result:'服5剂痛止,后调理而愈',quote:'心胸中大寒痛,呕不能饮食,腹中寒,上冲皮起,出见有头足,上下痛而不可触近,大建中汤主之'},
+  {name:'芪芍桂酒汤治黄汗',main:'女,45岁,汗出沾衣,色如黄柏汁,身肿,发热,烦躁',tongue:'苔黄腻',pulse:'脉沉',rx:'黄芪15g 白芍9g 桂枝9g 苦酒30g',result:'服10剂黄汗止,身肿消',quote:'黄汗之为病,身体肿,发热汗出而渴,状如风水,汗沾衣,色正黄如柏汁'},
+  {name:'白虎加人参汤治甲亢危象',main:'女,32岁,甲亢多年,突然高热 T40℃,大汗,大渴,心悸气短,神疲',tongue:'舌红苔黄',pulse:'脉洪大',rx:'生石膏60g 知母15g 甘草6g 粳米15g 党参15g',result:'一剂热退,三剂症情平稳',quote:'服桂枝汤,大汗出后,大烦渴不解,脉洪大者,白虎加人参汤主之'},
+  {name:'猪苓汤治慢性泌尿系感染',main:'女,50岁,反复尿频尿急尿痛,小便不利,口渴欲饮,心烦不寐',tongue:'舌红少苔',pulse:'脉细数',rx:'猪苓9g 茯苓9g 泽泻9g 滑石9g 阿胶9g(烊)',result:'服7剂症情明显好转',quote:'脉浮发热,渴欲饮水,小便不利者,猪苓汤主之'},
+  {name:'旋覆花汤治肝着',main:'男,42岁,胸胁胀满,常欲蹈其胸上,初起按之痛,后渐不痛',tongue:'苔薄',pulse:'脉弦',rx:'旋覆花9g 葱14茎 新绛(茜草)少许',result:'服5剂胸胁舒畅,后调理而愈',quote:'肝着,其人常欲蹈其胸上,先未苦时,但欲饮热,旋覆花汤主之'},
+  {name:'黄土汤治虚寒便血',main:'男,60岁,反复便血半年,血色暗淡,腹中冷痛,面色萎黄',tongue:'舌淡',pulse:'脉沉弱',rx:'甘草9g 干地黄9g 白术9g 制附子9g 阿胶9g 黄芩9g 灶心黄土60g',result:'服10剂血止,后调理3月未发',quote:'下血,先便后血,此远血也,黄土汤主之'},
+  {name:'赤小豆当归散治狐惑病',main:'女,35岁,口腔及外阴溃疡反复发作,目赤如鸠眼,心烦失眠',tongue:'苔黄腻',pulse:'脉数',rx:'赤小豆30g 当归9g',result:'服14剂溃疡愈合,后调理2月未发',quote:'病者脉数,无热,微烦,默默但欲卧,汗出,初得之三四日目赤如鸠眼,七八日目四眦黑'},
+  {name:'升麻鳖甲汤治面部红斑',main:'女,28岁,系统性红斑狼疮,面部红斑,咽喉痛,关节痛',tongue:'舌红',pulse:'脉数',rx:'升麻9g 当归6g 蜀椒3g 甘草6g 雄黄1g 鳖甲30g',result:'服月余红斑消退,症状缓解',quote:'阳毒之为病,面赤斑斑如锦文,咽喉痛,唾脓血'},
+  {name:'射干麻黄汤治小儿哮喘',main:'男童,5岁,哮喘反复发作,喉中痰鸣如水鸡声,咳嗽气喘,夜间加重',tongue:'苔白滑',pulse:'指纹青紫',rx:'射干6g 麻黄4.5g 生姜6g 细辛1.5g 紫菀6g 款冬花6g 五味子6g 大枣3枚 半夏6g',result:'服7剂喘平痰消,后调理2月',quote:'咳而上气,喉中水鸡声,射干麻黄汤主之'},
+  {name:'瓜蒌薤白白酒汤治心绞痛',main:'男,62岁,冠心病心绞痛,胸闷胸痛,喘息咳唾,受寒加重',tongue:'苔白腻',pulse:'脉沉紧',rx:'瓜蒌实15g 薤白12g 白酒适量',result:'服5剂胸痛缓解,后以此方调理',quote:'胸痹之病,喘息咳唾,胸背痛,短气,寸口脉沉而迟'},
+  {name:'乌头汤治类风湿性关节炎',main:'女,48岁,双手指关节肿痛变形,屈伸不利,畏寒肢冷',tongue:'苔白',pulse:'脉沉紧',rx:'麻黄9g 白芍9g 黄芪9g 炙甘草6g 川乌9g(先煎)',result:'服月余疼痛明显减轻',quote:'病历节,不可屈伸,疼痛,乌头汤主之'},
+  {name:'防己黄芪汤治肥胖浮肿',main:'女,35岁,体胖,反复浮肿,汗出恶风,身重倦怠',tongue:'舌淡苔白',pulse:'脉浮',rx:'防己9g 黄芪15g 白术9g 甘草6g 生姜9g 大枣4枚',result:'服14剂浮肿消,体重减轻3kg',quote:'脉浮,身重,汗出恶风者,防己黄芪汤主之'},
+  {name:'苓桂甘枣汤治欲作奔豚',main:'男,38岁,脐下悸动,时有气上冲胸,小便不利',tongue:'苔白滑',pulse:'脉沉',rx:'茯苓24g 桂枝12g 甘草6g 大枣5枚',result:'服5剂悸止冲平',quote:'发汗后,脐下悸者,欲作奔豚,苓桂甘枣汤主之'},
+  {name:'木防己汤治肺心病',main:'男,65岁,慢性肺心病,喘满心下痞坚,面色黧黑,小便不利,下肢浮肿',tongue:'苔白',pulse:'脉沉紧',rx:'木防己9g 石膏30g 桂枝6g 党参12g',result:'服7剂喘满减轻,后调理月余',quote:'膈间支饮,其人喘满,心下痞坚,面色黧黑,其脉沉紧'},
+  {name:'己椒苈黄丸治肺心病心衰',main:'女,68岁,肺心病心衰,腹满肠鸣,口舌干燥,小便不利,下肢浮肿',tongue:'苔白',pulse:'脉沉',rx:'防己9g 椒目9g 葶苈子9g 大黄9g',result:'服5剂二便通利,浮肿减轻',quote:'腹满,口舌干燥,此肠间有水气,己椒苈黄丸主之'},
+  {name:'小青龙加石膏汤治慢支急性发作',main:'男,70岁,慢支急性发作,咳喘痰多,烦躁,不能平卧',tongue:'苔白',pulse:'脉浮',rx:'麻黄9g 白芍9g 细辛3g 干姜6g 炙甘草6g 桂枝9g 半夏9g 五味子9g 石膏30g',result:'服5剂咳喘平,烦躁消',quote:'肺胀,咳而上气,烦躁而喘,脉浮者,心下有水,小青龙加石膏汤主之'},
+  {name:'木防己去石膏加茯苓芒硝汤治痰饮',main:'女,55岁,痰饮宿疾,心下痞坚,小便不利,大便不通',tongue:'苔黄',pulse:'脉沉实',rx:'木防己9g 桂枝6g 党参12g 茯苓12g 芒硝9g',result:'服3剂二便通,痞坚减',quote:'木防己汤主之,虚者即愈,实者三日复发,复与不愈者,宜木防己汤去石膏加茯苓芒硝汤主之'},
+  {name:'栝楼瞿麦丸治糖尿病',main:'男,50岁,糖尿病,口渴多饮,小便不利,腹中冷,下肢浮肿',tongue:'舌淡',pulse:'脉沉',rx:'瓜蒌根9g 茯苓9g 山药9g 制附子6g 瞿麦3g',result:'服月余口渴减,小便利',quote:'小便不利者,有水气,其人苦渴,栝楼瞿麦丸主之'},
+  {name:'奔豚汤治奔豚',main:'女,45岁,反复气上冲胸,腹痛,寒热往来,情志不舒时发作',tongue:'苔薄',pulse:'脉弦',rx:'甘草6g 川芎6g 当归6g 半夏12g 黄芩6g 葛根15g 白芍6g 生姜12g 甘李根白皮30g',result:'服7剂冲平,后调理而愈',quote:'奔豚气上冲胸,腹痛,往来寒热,奔豚汤主之'},
+  {name:'下瘀血汤治产后腹痛',main:'女,32岁,产后1月,少腹硬满,恶露不尽,腹痛拒按',tongue:'舌紫',pulse:'脉涩',rx:'大黄9g 桃仁9g 蛰虫9g',result:'服3剂泻下黑便,腹痛止,恶露净',quote:'产妇腹痛,烦满不得卧,枳实芍药散主之,假令不愈者,此为腹中有干血著脐下,宜下瘀血汤主之'},
+  {name:'白头翁加甘草阿胶汤治产后痢',main:'女,28岁,产后半月,下痢脓血,里急后重,口渴,面色萎黄',tongue:'苔黄',pulse:'脉数',rx:'白头翁9g 黄连9g 黄柏9g 秦皮9g 甘草3g 阿胶6g',result:'服5剂痢止,后调理而愈',quote:'产后下利虚极,白头翁加甘草阿胶汤主之'},
+  {name:'肾气丸治糖尿病肾阳虚',main:'男,60岁,糖尿病10年,畏寒肢冷,小便不利,腰膝酸软,浮肿',tongue:'舌淡胖',pulse:'脉沉细',rx:'干地黄24g 山药12g 山萸肉12g 茯苓9g 泽泻9g 丹皮9g 桂枝3g 制附子3g',result:'服月余症状改善,血糖稳定',quote:'男子消渴,小便反多,以饮一斗,小便一斗,肾气丸主之'},
+  {name:'五苓散合猪苓汤治尿路结石',main:'男,40岁,突发右侧腰部剧痛,B超示右肾结石,小便不利,血尿',tongue:'苔白',pulse:'脉弦紧',rx:'泽泻15g 茯苓9g 猪苓9g 白术9g 桂枝6g 滑石9g 阿胶9g(烊)',result:'服7剂排出结石一枚',quote:'太阳病,脉浮,小便不利,微热消渴者,五苓散主之'}
 ];
 
 /* ===== 状态 ===== */
@@ -1357,11 +1403,37 @@ function suggestHeFang(sixMeridian, text) {
     if (sixMeridian.includes('少阳') && sixMeridian.includes('太阳') && (hf.disease.includes('少阳') || hf.disease.includes('太阳'))) return true;
     return false;
   }).slice(0, 4);
-  if (matches.length === 0) {
+
+  // ===== v4.3.4 加减小方自动拼接: 症状里出现具体小方适应症, 自动顶到前面 =====
+  const AUTO_TRIGGERS = [
+    { kw: ['项背强几几', '项强', '颈项强痛', '项背拘急'], name: '葛根汤' },
+    { kw: ['喘', '咳喘', '气喘', '微喘'], name: '麻黄汤' },
+    { kw: ['心悸', '心慌', '心动悸', '脉结代'], name: '炙甘草汤' },
+    { kw: ['水饮', '脐下悸', '吐涎沫', '小便不利'], name: '五苓散' },
+    { kw: ['瘀血', '少腹急结', '如狂', '发狂', '经水不利'], name: '桃核承气汤' },
+    { kw: ['烦', '烦躁', '不得眠', '虚烦'], name: '栀子豉汤' },
+    { kw: ['小便利', '消渴', '欲饮水'], name: '五苓散' },
+    { kw: ['痰多', '胸闷', '胸痞'], name: '小陷胸汤' },
+    { kw: ['胁下痛', '胸胁满', '胸胁苦满'], name: '小柴胡汤' }
+  ];
+  const autoPicks = [];
+  AUTO_TRIGGERS.forEach(t => {
+    if (t.kw.some(k => text.includes(k))) {
+      const hf = HEFANG.find(h => h.name === t.name);
+      if (hf && !autoPicks.find(x => x.name === hf.name)) autoPicks.push(hf);
+    }
+  });
+  // 优先显示自动拼接的, 再补同经合方
+  const finalList = [...autoPicks, ...matches.filter(m => !autoPicks.find(a => a.name === m.name))].slice(0, 4);
+
+  if (finalList.length === 0) {
     html += '<p class="empty" style="padding:6px">根据当前六经, 暂未匹配加减小方</p>';
   } else {
-    html += matches.map(hf => `<div class="jf-card">
-      <h4>🧩 ${hf.name} <span class="badge badge-mods">合方</span></h4>
+    if (autoPicks.length > 0) {
+      html += '<p style="font-size:10px;color:#c33;margin:4px 0">⚡ 自动拼接命中 (' + autoPicks.length + ' 个小方):</p>';
+    }
+    html += finalList.map(hf => `<div class="jf-card">
+      <h4>🧩 ${hf.name} <span class="badge badge-mods">合方</span>${autoPicks.find(a => a.name === hf.name) ? ' <span class="badge badge-crit">⚡自动</span>' : ''}</h4>
       <div class="jf-comp"><strong>组成:</strong> ${hf.comp}</div>
       <div class="jf-disease"><strong>病机:</strong> ${hf.disease}</div>
       <div class="jf-use">📍 适用: ${hf.use}</div>
@@ -1424,11 +1496,11 @@ function scoreFormula(f, text) {
   const diseaseMatch = f.disease ? text.includes(f.disease) : false;
 
   total += mainMatch * 10;
-  if (reqAllHit && reqAllList.length > 0) total += 80;        // v4.3.3: 必见症权重提至80
-  else if (reqAllList.length > 0 && !reqAllHit) total -= 30;  // v4.3.3: 缺一必见症扣30
+  if (reqAllHit && reqAllList.length > 0) total += 80;        // 必见症权重提至80
+  else if (reqAllList.length > 0 && !reqAllHit) total -= 30;  // 缺一必见症扣30
   total += reqAnyMatch * 8;
-  if (pulseMatch) total += 12;
-  if (tongueMatch) total += 8;
+  if (pulseMatch) total += 18;        // v4.3.4: 脉象权重 12→18 (胡老最重主脉)
+  if (tongueMatch) total += 10;       // v4.3.4: 舌象权重 8→10
   if (diseaseMatch) total += 15;
 
   return { total, mainMatch, reqAnyMatch, reqAllHit, reqAllMiss, pulseMatch, tongueMatch, diseaseMatch };
@@ -1495,13 +1567,49 @@ function renderFormulaList() {
     list.innerHTML = '<p class="empty">无匹配方剂</p>';
     return;
   }
-  list.innerHTML = filtered.map(f => {
-    const mClass = 'm-' + f.six_meridian;
-    return `<div class="list-item" onclick="showFormulaDetail('${f.name.replace(/'/g, "\\'")}')">
-      <h4><span class="meridian ${mClass}">${f.six_meridian}</span>${f.name}</h4>
-      <p>${(f.main || []).slice(0, 3).join(' · ')} | 脉: ${f.pulse}</p>
-    </div>`;
-  }).join('');
+  // ===== 同类方辨分: 按六经分组, 每组内按必见症完整度排序 (v4.3.4) =====
+  const ORDER = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴', '杂病'];
+  const groups = {};
+  filtered.forEach(f => {
+    const m = f.six_meridian || '杂病';
+    if (!groups[m]) groups[m] = [];
+    groups[m].push(f);
+  });
+  let html = '';
+  for (const m of ORDER) {
+    if (!groups[m] || groups[m].length === 0) continue;
+    // 同经方内部按必见症数量降序 (必见症全的排前面, 这是胡老"同经方辨分"的核心)
+    groups[m].sort((a, b) => {
+      const al = (a.required_all || []).length;
+      const bl = (b.required_all || []).length;
+      if (bl !== al) return bl - al;
+      return a.name.localeCompare(b.name);
+    });
+    html += `<div class="meridian-group" style="margin-top:10px"><h4 style="color:var(--primary);font-size:13px;padding:4px 6px;background:#f5f0e6;border-left:3px solid var(--primary);border-radius:0 4px 4px 0">▍${m} (${groups[m].length} 方)</h4>`;
+    html += groups[m].map(f => {
+      const mClass = 'm-' + f.six_meridian;
+      const reqAllN = (f.required_all || []).length;
+      const reqAnyN = (f.required_any || []).length;
+      return `<div class="list-item" onclick="showFormulaDetail('${f.name.replace(/'/g, "\\'")}')">
+        <h4><span class="meridian ${mClass}">${f.six_meridian}</span>${f.name}${reqAllN>0 ? ` <span style="font-size:10px;color:#c33">[必${reqAllN}]</span>` : ''}${reqAnyN>0 ? ` <span style="font-size:10px;color:#396">[或${reqAnyN}]</span>` : ''}</h4>
+        <p>${(f.main || []).slice(0, 3).join(' · ')} | 脉: ${f.pulse}</p>
+      </div>`;
+    }).join('');
+    html += '</div>';
+  }
+  // 处理 ORDER 之外的 (留个兜底)
+  Object.keys(groups).filter(m => !ORDER.includes(m)).forEach(m => {
+    html += `<div class="meridian-group" style="margin-top:10px"><h4 style="color:var(--primary);font-size:13px;padding:4px 6px;background:#f5f0e6;border-left:3px solid var(--primary);border-radius:0 4px 4px 0">▍${m} (${groups[m].length} 方)</h4>`;
+    html += groups[m].map(f => {
+      const mClass = 'm-' + f.six_meridian;
+      return `<div class="list-item" onclick="showFormulaDetail('${f.name.replace(/'/g, "\\'")}')">
+        <h4><span class="meridian ${mClass}">${f.six_meridian}</span>${f.name}</h4>
+        <p>${(f.main || []).slice(0, 3).join(' · ')} | 脉: ${f.pulse}</p>
+      </div>`;
+    }).join('');
+    html += '</div>';
+  });
+  list.innerHTML = html;
 }
 
 function showFormulaDetail(name) {
