@@ -1486,16 +1486,24 @@ function checkCritical(text) {
 
 function scoreFormula(f, text) {
   // v4.3.4 引擎: 同义词归一 (胡老体系"大渴"="口渴", "大热"="身大热" 等)
+  // 双方都归一: 用户输入的 text, 以及方剂字段的 main/required_all/required_any/pulse/tongue/disease
   const normalized = normalizeText(text);
+  const norm = (s) => s ? normalizeText(s) : s;
+  const mainArr = (f.main || []).map(norm);
+  const reqAnyArr = (f.required_any || []).map(norm);
+  const reqAllArr = (f.required_all || []).map(norm);
+  const pulseStr = norm(f.pulse);
+  const tongueStr = norm(f.tongue);
+  const diseaseStr = norm(f.disease);
   let total = 0;
-  const mainMatch = (f.main || []).filter(m => normalized.includes(m)).length;
-  const reqAnyMatch = (f.required_any || []).filter(m => normalized.includes(m)).length;
-  const reqAllList = f.required_all || [];
+  const mainMatch = mainArr.filter(m => normalized.includes(m)).length;
+  const reqAnyMatch = reqAnyArr.filter(m => normalized.includes(m)).length;
+  const reqAllList = reqAllArr;
   const reqAllHit = reqAllList.length > 0 && reqAllList.every(m => normalized.includes(m));
   const reqAllMiss = reqAllList.filter(m => !normalized.includes(m));
-  const pulseMatch = f.pulse ? normalized.includes(f.pulse) : false;
-  const tongueMatch = f.tongue ? normalized.includes(f.tongue) : false;
-  const diseaseMatch = f.disease ? normalized.includes(f.disease) : false;
+  const pulseMatch = pulseStr ? normalized.includes(pulseStr) : false;
+  const tongueMatch = tongueStr ? normalized.includes(tongueStr) : false;
+  const diseaseMatch = diseaseStr ? normalized.includes(diseaseStr) : false;
 
   total += mainMatch * 10;
   if (reqAllHit) total += 80;                // 必见症全中: +80
