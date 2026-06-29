@@ -648,7 +648,7 @@ button.danger{background:var(--danger);color:#fff;border:none;padding:7px 10px;b
   </div>
 
   <div class="footer">
-    胡希恕六经辨证系统 v4.1 · 314 方证 + 26 脉象 + 6 腹证 + 15 医案 · 四诊合参 · 仅供学习参考
+    <p>胡希恕六经辨证系统 v4.3.4 · 367 方证 + 30 句语录 + 73 真实医案 · 四诊合参 · 仅供学习参考 · 2026-06-29 部署</p>
   </div>
 </div>
 
@@ -922,7 +922,7 @@ let CURRENT_MERIDIAN = 'all';
 let CURRENT_STEP = 1;
 
 /* ===== 初始化 ===== */
-fetch('data/formulas.json').then(r => r.json()).then(d => {
+fetch('data/formulas.json?v=' + Date.now()).then(r => r.json()).then(d => {
   FORMULAS = d;
   renderFormulaList();
 }).catch(e => console.error('加载方剂库失败:', e));
