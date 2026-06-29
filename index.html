@@ -1568,7 +1568,8 @@ function renderFormulaList() {
     return;
   }
   // ===== 同类方辨分: 按六经分组, 每组内按必见症完整度排序 (v4.3.4) =====
-  const ORDER = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴', '杂病'];
+  // 胡老把方剂分三类: 六经方+杂病方(经方)+时方(温病/脾胃/补土派). v4.3.4 列表显示分 7 组
+  const ORDER = ['太阳', '阳明', '少阳', '太阴', '少阴', '厥阴', '杂病', '时方'];
   const groups = {};
   filtered.forEach(f => {
     const m = f.six_meridian || '杂病';
