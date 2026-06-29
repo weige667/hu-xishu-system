@@ -1485,15 +1485,17 @@ function checkCritical(text) {
 }
 
 function scoreFormula(f, text) {
+  // v4.3.4 引擎: 同义词归一 (胡老体系"大渴"="口渴", "大热"="身大热" 等)
+  const normalized = normalizeText(text);
   let total = 0;
-  const mainMatch = (f.main || []).filter(m => text.includes(m)).length;
-  const reqAnyMatch = (f.required_any || []).filter(m => text.includes(m)).length;
+  const mainMatch = (f.main || []).filter(m => normalized.includes(m)).length;
+  const reqAnyMatch = (f.required_any || []).filter(m => normalized.includes(m)).length;
   const reqAllList = f.required_all || [];
-  const reqAllHit = reqAllList.length > 0 && reqAllList.every(m => text.includes(m));
-  const reqAllMiss = reqAllList.filter(m => !text.includes(m));
-  const pulseMatch = f.pulse ? text.includes(f.pulse) : false;
-  const tongueMatch = f.tongue ? text.includes(f.tongue) : false;
-  const diseaseMatch = f.disease ? text.includes(f.disease) : false;
+  const reqAllHit = reqAllList.length > 0 && reqAllList.every(m => normalized.includes(m));
+  const reqAllMiss = reqAllList.filter(m => !normalized.includes(m));
+  const pulseMatch = f.pulse ? normalized.includes(f.pulse) : false;
+  const tongueMatch = f.tongue ? normalized.includes(f.tongue) : false;
+  const diseaseMatch = f.disease ? normalized.includes(f.disease) : false;
 
   total += mainMatch * 10;
   if (reqAllHit) total += 80;                // 必见症全中: +80
@@ -1504,6 +1506,30 @@ function scoreFormula(f, text) {
   if (diseaseMatch) total += 15;
 
   return { total, mainMatch, reqAnyMatch, reqAllHit, reqAllMiss, pulseMatch, tongueMatch, diseaseMatch };
+}
+
+// v4.3.4 同义词归一 (胡老临床用语 → 系统标准词)
+function normalizeText(text) {
+  const SYNONYMS = {
+    '大渴': '口渴', '烦渴': '口渴', '渴欲饮水': '口渴', '消渴': '口渴',
+    '大热': '身热', '壮热': '身热', '身灼热': '身热', '蒸蒸发热': '身热',
+    '大汗': '汗出', '汗出不止': '汗出', '自汗': '汗出', '漏汗': '汗出', '微汗': '汗出',
+    '往来寒热': '寒热往来', '寒热如疟': '寒热往来',
+    '喜呕': '呕吐', '呕逆': '呕吐', '干呕': '呕吐', '食入即吐': '呕吐',
+    '肢冷': '手足厥冷', '手足不温': '手足厥冷', '四肢冷': '手足厥冷',
+    '肢厥': '手足厥冷', '厥冷': '手足厥冷', '四逆': '手足厥冷',
+    '完谷不化': '下利清谷', '洞泻': '下利清谷',
+    '但欲寐': '嗜睡', '神疲': '精神不振', '倦怠': '精神不振',
+    '心下满': '心下痞', '心下硬': '心下痞硬', '心下痞': '心下痞',
+    '瘥': '愈', '不愈': '未愈', '愈': '未愈',
+    '项强': '头项强痛', '项强痛': '头项强痛', '项背强': '项背强几几',
+    '咳': '咳嗽', '嗽': '咳嗽'
+  };
+  let s = text;
+  for (const [k, v] of Object.entries(SYNONYMS)) {
+    if (s.includes(k)) s = s.split(k).join(v);
+  }
+  return s;
 }
 
 function renderFormula(f, detail) {
